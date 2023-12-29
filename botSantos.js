@@ -4,7 +4,7 @@ var acronymGuest = "vit";
 const Uniform = { COUNTRY: 0, CLUBLA: 1, CLUBEU: 2 };
 /* ROOM */
 
-const roomName = "☕ Santos F.C Hax4v4 ☕";
+const roomName = "☕[AF] Santos F.C Hax 4v4 24/7 ⬛⬜ ☕";
 const maxPlayers = 25;
 const roomPublic = true;
 const token = ""; // Insert token here
@@ -598,7 +598,7 @@ class MutePlayer {
   setDuration(minutes) {
     this.unmuteTimeout = setTimeout(() => {
       room.sendAnnouncement(
-        `You have been unmuted.`,
+        `Has sido desmuteado`,
         this.playerId,
         announcementColor,
         "bold",
@@ -1248,7 +1248,8 @@ function playerChat(player, message) {
   );
   if (playerTargetIndex == -1) {
     room.sendAnnouncement(
-      `Invalid player, make sure the name you entered is correct.`,
+      `
+      Jugador no válido, asegúrese de que el nombre que ingresó sea correcto.`,
       player.id,
       errorColor,
       "bold",
@@ -1259,7 +1260,8 @@ function playerChat(player, message) {
   var playerTarget = playersAll[playerTargetIndex];
   if (player.id == playerTarget.id) {
     room.sendAnnouncement(
-      `You can't send a PM to yourself!`,
+      `
+      ¡No puedes enviarte un MP a ti mismo!`,
       player.id,
       errorColor,
       "bold",
@@ -1505,7 +1507,7 @@ function renameCommand(player, message) {
     }
     localStorage.setItem(authArray[player.id][0], JSON.stringify(stats));
     room.sendAnnouncement(
-      `You successfully renamed yourself ${stats.playerName} !`,
+      `Te has cambiado el nombre correctamente ${stats.playerName} !`,
       player.id,
       successColor,
       "bold",
@@ -1513,7 +1515,7 @@ function renameCommand(player, message) {
     );
   } else {
     room.sendAnnouncement(
-      `You haven't played a game in this room yet !`,
+      `No has jugado partidas en esta sala !`,
       player.id,
       errorColor,
       "bold",
@@ -1553,7 +1555,7 @@ function afkCommand(player, message) {
     } else {
       if (AFKCooldownSet.has(player.id)) {
         room.sendAnnouncement(
-          `You can only go AFK every ${AFKCooldown} minutes. Don't abuse the command !`,
+          `Solo puedes ir AFK cada ${AFKCooldown} minutos. No abuses del comando !`,
           player.id,
           errorColor,
           "bold",
@@ -1784,7 +1786,7 @@ function muteCommand(player, message) {
           );
         } else {
           room.sendAnnouncement(
-            `You can't mute an admin.`,
+            `No puedes mutear un administrador`,
             player.id,
             errorColor,
             "bold",
@@ -1873,7 +1875,7 @@ function unmuteCommand(player, message) {
       );
     } else {
       room.sendAnnouncement(
-        `Incorrect format for your argument. Enter "!help unmute" for more information.`,
+        `Formato incorrecto para su argumento. Ingrese "!ayudar a activar el silencio" para obtener más información.`,
         player.id,
         errorColor,
         "bold",
@@ -1940,7 +1942,7 @@ function clearbansCommand(player, message) {
         );
       } else {
         room.sendAnnouncement(
-          `The ID you entered doesn't have a ban associated to. Enter "!help clearbans" for more information.`,
+          `El ID que ingresaste no tiene una prohibición asociada. Ingrese "!help clearbans" para obtener más información.`,
           player.id,
           errorColor,
           "bold",
@@ -1950,7 +1952,8 @@ function clearbansCommand(player, message) {
       banList = banList.filter((p) => p[1] != ID);
     } else {
       room.sendAnnouncement(
-        `Invalid ID entered. Enter "!help clearbans" for more information.`,
+        `Se ingresó una identificación no válida. Ingrese "!help clearbans" para obtener más información.
+        `,
         player.id,
         errorColor,
         "bold",
@@ -1959,7 +1962,7 @@ function clearbansCommand(player, message) {
     }
   } else {
     room.sendAnnouncement(
-      `Wrong number of arguments. Enter "!help clearbans" for more information.`,
+      `Número incorrecto de argumentos. Ingrese "!help clearbans" para obtener más información.`,
       player.id,
       errorColor,
       "bold",
@@ -2057,7 +2060,7 @@ function setAdminCommand(player, message) {
       }
     } else {
       room.sendAnnouncement(
-        `Incorrect format for your argument. Enter "!help setadmin" for more information.`,
+        `Formato incorrecto para su argumento. Ingrese "!help setadmin" para obtener más información.`,
         player.id,
         errorColor,
         "bold",
@@ -2066,7 +2069,7 @@ function setAdminCommand(player, message) {
     }
   } else {
     room.sendAnnouncement(
-      `Wrong number of arguments. Enter "!help setadmin" for more information.`,
+      `Número incorrecto de argumentos. Ingrese "!help setadmin" para obtener más información.`,
       player.id,
       errorColor,
       "bold",
@@ -2139,7 +2142,7 @@ function removeAdminCommand(player, message) {
       );
     } else {
       room.sendAnnouncement(
-        `Incorrect format for your argument. Enter "!help removeadmin" for more information.`,
+        `Número incorrecto de argumentos. Ingrese "!help setadmin" para obtener más información.`,
         player.id,
         errorColor,
         "bold",
@@ -2148,7 +2151,8 @@ function removeAdminCommand(player, message) {
     }
   } else {
     room.sendAnnouncement(
-      `Wrong number of arguments. Enter "!help removeadmin" for more information.`,
+      `
+      Número incorrecto de argumentos. Ingrese "!help setadmin" para obtener más información.`,
       player.id,
       errorColor,
       "bold",
@@ -2229,9 +2233,9 @@ function checkTime() {
     if (drawTimeLimit != 0) {
       goldenGoal = true;
       room.sendAnnouncement(
-        "⚽ First goal wins !",
+        "⚽ Gol gana a lo barrio mijos !",
         null,
-        announcementColor,
+        warningColor,
         "bold",
         HaxNotification.CHAT
       );
@@ -2406,7 +2410,11 @@ function choosePlayer() {
         );
         timeOutCap = setTimeout(
           (player) => {
-            room.kickPlayer(player.id, "You didn't choose in time !", false);
+            room.kickPlayer(
+              player.id,
+              "No escogiste a tiempo meme de mieer !",
+              false
+            );
           },
           chooseTime * 500,
           captain
@@ -2465,7 +2473,7 @@ function chooseModeFunction(player, message) {
           Number.parseInt(msgArray[0]) < 1
         ) {
           room.sendAnnouncement(
-            `Your number is invalid !`,
+            `Tu numero es invalido !`,
             player.id,
             errorColor,
             "bold",
@@ -2532,7 +2540,7 @@ function chooseModeFunction(player, message) {
           Number.parseInt(msgArray[0]) < 1
         ) {
           room.sendAnnouncement(
-            `Your number is invalid !`,
+            `Tu numero es invalido !`,
             player.id,
             errorColor,
             "bold",
@@ -3414,6 +3422,7 @@ function getGoalString(team) {
         game.goals.push(
           new Goal(scores.time, team, goalAttribution[0], goalAttribution[1])
         );
+
       } else {
         goalString = `⚽ ${getTimeGame(scores.time)} Golaaaaaaaaaaazo de ${
           goalAttribution[0].name
@@ -3724,12 +3733,12 @@ function fetchGametimeReport(game) {
 
 function fetchActionsSummaryReport(game) {
   var fieldReportRed = {
-    name: "🔴        **RED TEAM STATS**",
+    name: "🔴        **ESTADISTICAS EQUIPO ROJO**",
     value: "📊 __**Player Stats:**__\n\n",
     inline: true,
   };
   var fieldReportBlue = {
-    name: "🔵       **BLUE TEAM STATS**",
+    name: "🔵       **ESTADISTICAS EQUIPO AZUL**",
     value: "📊 __**Player Stats:**__\n\n",
     inline: true,
   };
@@ -3879,7 +3888,8 @@ room.onPlayerJoin = function (player) {
     }).then((res) => res);
   }
   room.sendAnnouncement(
-    `👋 Bienvenido ${player.name} !\nIngresa "t" antes de tu mensaje para usar el chat del equipo y "@@" seguido del nombre de un jugador para enviarle un mensaje privado.`,
+    `
+    👋 Bienvenido ${player.name} !\nIngresa "t" antes de tu mensaje para usar el chat del equipo y "@@" seguido del nombre de un jugador para enviarle un mensaje privado.`,
     player.id,
     welcomeColor,
     "bold",
@@ -4064,7 +4074,7 @@ room.onPlayerChat = function (player, message) {
       commands[command].function(player, message);
     else
       room.sendAnnouncement(
-        `The command you tried to enter does not exist for you. Please enter '!help' to get the available commands to you.`,
+        `El comando que intentó ingresar no existe para usted. Ingrese '!help' para obtener los comandos disponibles.`,
         player.id,
         errorColor,
         "bold",
@@ -4351,7 +4361,7 @@ room.onStadiumChange = function (newStadiumName, byPlayer) {
   if (byPlayer !== null) {
     if (getRole(byPlayer) < Role.MASTER && currentStadium != "other") {
       room.sendAnnouncement(
-        `You can't change stadium manually ! Please use the stadium commands.`,
+        `No puedes cambiar estadio manualmente`,
         byPlayer.id,
         errorColor,
         "bold",
@@ -4360,7 +4370,7 @@ room.onStadiumChange = function (newStadiumName, byPlayer) {
       stadiumCommand(emptyPlayer, `!${currentStadium}`);
     } else {
       room.sendAnnouncement(
-        `Map changed. After you're done with this map, please use the stadium commands.`,
+        `Mapa cambiado. Una vez que haya terminado con este mapa, utilice los comandos del estadio.`,
         byPlayer.id,
         infoColor,
         "bold",
