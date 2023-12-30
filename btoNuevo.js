@@ -12,6 +12,7 @@ const geo = [
 ];
 // place your geoloc, so as not to have a leaky room
 
+let lastUsed = {};
 const room = HBInit({
   roomName: roomName,
   maxPlayers: maxPlayers,
@@ -549,8 +550,8 @@ function checkTime() {
     );
   }
   if (
-    scores.time > scores.timeLimit + drawTimeLimit * 60 - 15 &&
-    scores.time <= scores.timeLimit + drawTimeLimit * 60
+    scores.time > scores.timeLimit + drawTimeLimit * 400 - 15 &&
+    scores.time <= scores.timeLimit + drawTimeLimit * 400
   ) {
     if (checkTimeVariable == false && announced == false) {
       checkTimeVariable = true;
@@ -566,7 +567,7 @@ function checkTime() {
       );
     }
   }
-  if (scores.time > scores.timeLimit + drawTimeLimit * 60) {
+  if (scores.time > scores.timeLimit + drawTimeLimit * 400) {
     if (checkTimeVariable == false) {
       checkTimeVariable = true;
       setTimeout(() => {
@@ -1705,7 +1706,126 @@ room.onPlayerKicked = function (kickedPlayer, reason, ban, byPlayer) {
 
 /* PLAYER ACTIVITY */
 
+function votekickCheck(player){
+  if((room.getPlayerList().length)%2 == 0){
+      if(JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes >= (room.getPlayerList().length)*1/2){
+    room.kickPlayer(player.id,"👥❌ El voto popular ha dicho que te banee. Adiós!",true);
+}
+    else{
+  var VotosRestantes = (room.getPlayerList().length)*1/2 - JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes
+    console.log(new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds() + "." + new Date().getMilliseconds() + " 🗳️ " + player.name + " : " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + (room.getPlayerList().length)*1/2);
+    room.sendAnnouncement("🗳️ Han votado a " + player.name + " para que sea baneado. ❌👤",null,0xFFD500,"normal",1);
+    room.sendAnnouncement("⚊⚊⚊⚊⚊⚊ VOTOS TOTALES: " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + (room.getPlayerList().length)*1/2 + " ⚊⚊⚊⚊⚊⚊ VOTOS RESTANTES: " + VotosRestantes,null,0xFFFF00,"bold",1);
+    room.sendAnnouncement("🗳️ Escribe: 'expulsar IDdeJugador' para votar. Para ver los Nº de ID, escribe # en la barra de chat.",null,0xFFFFFF,"normal",1);
+}
+  }
+  else if((room.getPlayerList().length)%2 == 1){
+      if(JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes >= Math.round((room.getPlayerList().length)*1/2)){
+    room.kickPlayer(player.id,"👥❌ El voto popular ha dicho que te banee. Adiós!",true);
+}
+    else{
+var VotosRestantes = (room.getPlayerList().length)*1/2 - JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes
+    console.log(new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds() + "." + new Date().getMilliseconds() + " 🗳️ " + player.name + " : " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + Math.round((room.getPlayerList().length)*1/2));
+    room.sendAnnouncement("🗳️ Han votado a " + player.name + " para que sea baneado. ❌👤",null,0xFFD500,"normal",1);
+    room.sendAnnouncement("⚊⚊⚊⚊⚊⚊ VOTOS TOTALES: " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + Math.round((room.getPlayerList().length)*1/2) + " ⚊⚊⚊⚊⚊⚊ VOTOS RESTANTES: " + VotosRestantes,null,0xFFD500,"bold",1);
+    room.sendAnnouncement("🗳️ Escribe: 'expulsar IDdeJugador' para votar. Para ver los Nº de ID, escribe # en la barra de chat.",null,0xFFFFFF,"normal",1);
+}
+  }
+}
+
 room.onPlayerChat = function (player, message) {
+  if (message.startsWith("expulsar ") == true) {
+    playerFound = false;
+    Jugadores = room.getPlayerList();
+    for (var i = 0; i < Jugadores.length; i++) {
+      if (message === "expulsar " + Jugadores[i].id) {
+        if (room.getPlayerList().length < 4) {
+          room.sendAnnouncement(
+            "No puedes votar a otro jugador cuando hay menos de 4 personas en el host.",
+            player.id,
+            0xff0000,
+            "bold",
+            2
+          );
+          return false;
+        }
+        if (Jugadores[i].id == player.id) {
+          room.sendAnnouncement(
+            "No te puedes votar a vos mismo.",
+            player.id,
+            0xff0000,
+            "bold",
+            2
+          );
+          return false;
+        }
+        if (votedPlayers.has(GetPlayer(player.id).auth)) {
+          room.sendAnnouncement(
+            "No puedes votar a otro jugador más de una vez por minuto.",
+            player.id,
+            0xff0000,
+            "bold",
+            2
+          );
+          return false;
+        }
+        votedPlayers.add(GetPlayer(player.id).auth);
+        playerFound = true;
+        if (
+          JSON.parse(localStorage.getItem(GetPlayer(Jugadores[i].id).auth)) !=
+          null
+        ) {
+          var v = JSON.parse(
+            localStorage.getItem(GetPlayer(Jugadores[i].id).auth)
+          ).votes;
+          v++;
+          var playerObject = {
+            auth: GetPlayer(Jugadores[i].id).auth,
+            votes: v,
+          };
+          localStorage.setItem(
+            GetPlayer(Jugadores[i].id).auth,
+            JSON.stringify(playerObject)
+          );
+
+          if (v == 1) {
+            setTimeout(function () {
+              if (v < Jugadores.length) {
+                votekickRemove(player);
+              }
+            }, votekickTimeout);
+          }
+        }
+        votekickCheck(Jugadores[i]);
+      }
+    }
+    if (playerFound === false) {
+      Jugadores = room.getPlayerList();
+      playersString = "";
+      for (i = 0; i < Jugadores.length; i++) {
+        playersString =
+          playersString + Jugadores[i].name + ": [" + Jugadores[i].id + "]\n";
+      }
+      room.sendAnnouncement(
+        "No existe el ID de ese jugador, acá la lista de jugadores votables:" +
+          "\n" +
+          playersString,
+        player.id,
+        0xffff00,
+        "normal",
+        1
+      );
+    }
+    return false;
+  }
+
+  if (message === "!ids") {
+    let players = room.getPlayerList();
+    for (let p of players) {
+      room.sendChat(p.name + " tiene el ID: " + p.id);
+    }
+  }
+
   if (
     message.length > 1 &&
     message[0].toLowerCase() == "t" &&
@@ -2791,7 +2911,7 @@ room.onPlayerChat = function (player, message) {
   player.team != Team.SPECTATORS ? setActivity(player, 0) : null;
   if (["!help", "!ajuda"].includes(message[0].toLowerCase())) {
     room.sendAnnouncement(
-      "[📄] Comandos : !me, !tc, !pv, !showme, !rankinfo, !sequencia, !msgdodia, !games, !wins, !goals, !assists, !cs, !afks, !mutes, !bans.",
+      "[📄] Comandos : !me, !showme, !games, !wins, !goals, !assists, !cs, !afks, !mutes, !bans.",
       player.id,
       0x309d2b,
       "bold"
@@ -2826,41 +2946,41 @@ room.onPlayerChat = function (player, message) {
     }
   }
 
-  if (["!uni", "!unis"].includes(message[0].toLowerCase())) {
-    room.sendAnnouncement(
-      "_______________________________________",
-      player.id,
-      Cor.Amarelo,
-      "bold"
-    );
-    room.sendAnnouncement("Equipos de futbol:", player.id, Cor.Amarelo, "bold");
-    room.sendAnnouncement(
-      "Brazil [!bra], Germany [!ger], Argentina [!arg], Spain [!spa], Portugal [!por]",
-      player.id,
-      Cor.Branco,
-      "normal"
-    );
-    room.sendAnnouncement(
-      "Italy [!ita], Uruguay [!uru], France [!fra], England [!eng], Belgium [!bel], Netherlands [!net]",
-      player.id,
-      Cor.Branco,
-      "normal"
-    );
-    room.sendAnnouncement(
-      "_______________________________________",
-      player.id,
-      Cor.Amarelo,
-      "bold"
-    );
-    //            room.sendAnnouncement("Times Sulamericanos:", player.id, Cor.Amarelo, "bold");
-    //            room.sendAnnouncement("Corinthians <cor>, São Paulo <spfc>, Palmeiras <pal>, Santos <sfc>, Flamengo <fla>, Grêmio <gre>", player.id, Cor.Branco, "normal");
-    //           room.sendAnnouncement("Vasco <vas>, Fluminense <flu>, Internacional <int>, Cruzeiro <cru>, Boca Juniors <boc>, River Plate <riv>", player.id, Cor.Branco, "normal");
-    //            room.sendAnnouncement("_______________________________________", player.id, Cor.Amarelo, "bold");
-    //            room.sendAnnouncement("Times Europeus:", player.id, Cor.Amarelo, "bold");
-    //            room.sendAnnouncement("Manchester City <mci>, Borussia Dortmund <bor>, Paris Saint-Germain <psg>, Real Madrid <rea>, Inter de Milão <intM>", player.id, Cor.Branco, "normal");
-    //            room.sendAnnouncement("Barcelona <bar>, Atlético de Madrid <atm>, Liverpool <liv>, Chelsea <che>, Juventus <juv>, Bayern de Munique <bay>, Milan <mil>", player.id, Cor.Branco, "normal");
-    //            room.sendAnnouncement("_______________________________________", player.id, Cor.Amarelo, "bold");
-  }
+  // if (["!uni", "!unis"].includes(message[0].toLowerCase())) {
+  //   room.sendAnnouncement(
+  //     "_______________________________________",
+  //     player.id,
+  //     Cor.Amarelo,
+  //     "bold"
+  //   );
+  //   room.sendAnnouncement("Equipos de futbol:", player.id, Cor.Amarelo, "bold");
+  //   room.sendAnnouncement(
+  //     "Brazil [!bra], Germany [!ger], Argentina [!arg], Spain [!spa], Portugal [!por]",
+  //     player.id,
+  //     Cor.Branco,
+  //     "normal"
+  //   );
+  //   room.sendAnnouncement(
+  //     "Italy [!ita], Uruguay [!uru], France [!fra], England [!eng], Belgium [!bel], Netherlands [!net]",
+  //     player.id,
+  //     Cor.Branco,
+  //     "normal"
+  //   );
+  //   room.sendAnnouncement(
+  //     "_______________________________________",
+  //     player.id,
+  //     Cor.Amarelo,
+  //     "bold"
+  //   );
+  //   //            room.sendAnnouncement("Times Sulamericanos:", player.id, Cor.Amarelo, "bold");
+  //   //            room.sendAnnouncement("Corinthians <cor>, São Paulo <spfc>, Palmeiras <pal>, Santos <sfc>, Flamengo <fla>, Grêmio <gre>", player.id, Cor.Branco, "normal");
+  //   //           room.sendAnnouncement("Vasco <vas>, Fluminense <flu>, Internacional <int>, Cruzeiro <cru>, Boca Juniors <boc>, River Plate <riv>", player.id, Cor.Branco, "normal");
+  //   //            room.sendAnnouncement("_______________________________________", player.id, Cor.Amarelo, "bold");
+  //   //            room.sendAnnouncement("Times Europeus:", player.id, Cor.Amarelo, "bold");
+  //   //            room.sendAnnouncement("Manchester City <mci>, Borussia Dortmund <bor>, Paris Saint-Germain <psg>, Real Madrid <rea>, Inter de Milão <intM>", player.id, Cor.Branco, "normal");
+  //   //            room.sendAnnouncement("Barcelona <bar>, Atlético de Madrid <atm>, Liverpool <liv>, Chelsea <che>, Juventus <juv>, Bayern de Munique <bay>, Milan <mil>", player.id, Cor.Branco, "normal");
+  //   //            room.sendAnnouncement("_______________________________________", player.id, Cor.Amarelo, "bold");
+  // }
   if (["!ranks"].includes(message[0].toLowerCase())) {
     room.sendAnnouncement(
       "_______________________________________",
@@ -3030,7 +3150,7 @@ room.onPlayerChat = function (player, message) {
       "bold"
     );
     room.sendAnnouncement(
-      "「👓」 This message only you can see, if you want to show your stats, use the command '!showme'!",
+      "「👓」 Este mensaje solo lo puedes ver tu, si quieres mostrar tus estadisticas escribe '!showme'!",
       player.id,
       0xff7900,
       "bold"
@@ -3041,7 +3161,9 @@ room.onPlayerChat = function (player, message) {
       ? (stats = JSON.parse(localStorage.getItem(getAuth(player))))
       : (stats = [0, 0, 0, 0, "0.00", 0, 0, 0, 0, "0.00"]);
     room.sendAnnouncement(
-      "[📄] El jugador " + player.name + " ha mostrado sus estadisticas! '!showme'!",
+      "[📄] El jugador " +
+        player.name +
+        " ha mostrado sus estadisticas! '!showme'!",
       null,
       0xff7900,
       "bold"
@@ -3094,7 +3216,7 @@ room.onPlayerChat = function (player, message) {
     } catch {}
     if (tableau.length < 5) {
       room.sendAnnouncement(
-        "[PV] Didn't play enough games",
+        "[PV] No se jugaron suficientes partidas",
         player.id,
         0xff0000
       );
@@ -3104,7 +3226,7 @@ room.onPlayerChat = function (player, message) {
       return b[1] - a[1];
     });
     room.sendAnnouncement(
-      "[📄] 🎮 Matches Played> #1 " +
+      "[📄] 🎮 Matches Played > #1 " +
         tableau[0][0] +
         ": " +
         tableau[0][1] +
@@ -3468,8 +3590,8 @@ room.onPlayerChat = function (player, message) {
           "], ";
       }
     }
-    if (cstm == "[PV] List of muteds: ") {
-      room.sendChat("[PV] There is no one on the mutated list!", player.id);
+    if (cstm == "[PV] Lista de muteados: ") {
+      room.sendChat("[PV] No hay nadie muteado!", player.id);
       return false;
     }
     cstm = cstm.substring(0, cstm.length - 2);
@@ -3623,40 +3745,55 @@ room.onPlayerChat = function (player, message) {
   } else if (
     ["!bb", "!bye", "!cya", "!gn"].includes(message[0].toLowerCase())
   ) {
-    room.kickPlayer(player.id, "👋 Until later!", false);
+    room.kickPlayer(player.id, "👋 Nos vemos despues !", false);
   } else if (["!dc", "!disc", "!discord"].includes(message[0].toLowerCase())) {
-    room.sendAnnouncement(
-      "                                        ▒█▀▀▄ ▀█▀ ▒█▀▀▀█ ▒█▀▀█ ▒█▀▀▀█ ▒█▀▀█ ▒█▀▀▄ ",
-      null,
-      0x9250fd,
-      "bold"
-    );
-    room.sendAnnouncement(
-      "                                        ▒█░▒█ ▒█░ ░▀▀▀▄▄ ▒█░░░ ▒█░░▒█ ▒█▄▄▀ ▒█░▒█ ",
-      null,
-      0x8466fd,
-      "bold"
-    );
-    room.sendAnnouncement(
-      "                                        ▒█▄▄▀ ▄█▄ ▒█▄▄▄█ ▒█▄▄█ ▒█▄▄▄█ ▒█░▒█ ▒█▄▄▀ ",
-      null,
-      0x7b73fd,
-      "bold"
-    );
-    room.sendAnnouncement(
-      "                                        💬 Discord Link: ➡ (Proximamente) ⬅",
-      null,
-      0xf6ff43,
-      "bold"
-    );
+    let user = message.author; // Asegúrate de obtener el ID del usuario de la forma correcta para tu contexto
+    let now = Date.now();
+
+    // Comprobar si el usuario ha usado el comando en los últimos 2 minutos
+    if (lastUsed[user] && now - lastUsed[user] < 2 * 60 * 1000) {
+      room.sendAnnouncement(
+        "Por favor espera 2 minutos antes de usar este comando de nuevo.",
+        null,
+        0xf6ff43,
+        "bold"
+      );
+    } else {
+      // Actualizar la última vez que se usó el comando
+      lastUsed[user] = now;
+
+      // El resto de tu código...
+      room.sendAnnouncement(
+        "                                        ▒█▀▀▄ ▀█▀ ▒█▀▀▀█ ▒█▀▀█ ▒█▀▀▀█ ▒█▀▀█ ▒█▀▀▄ ",
+        null,
+        0x9250fd,
+        "bold"
+      );
+      // ...resto de los anuncios
+
+      room.sendAnnouncement(
+        "                                        ▒█░▒█ ▒█░ ░▀▀▀▄▄ ▒█░░░ ▒█░░▒█ ▒█▄▄▀ ▒█░▒█ ",
+        null,
+        0x8466fd,
+        "bold"
+      );
+      room.sendAnnouncement(
+        "                                        ▒█▄▄▀ ▄█▄ ▒█▄▄▄█ ▒█▄▄█ ▒█▄▄▄█ ▒█░▒█ ▒█▄▄▀ ",
+        null,
+        0x7b73fd,
+        "bold"
+      );
+      room.sendAnnouncement(
+        "                                        💬 Discord Link: ➡ (Proximamente) ⬅",
+        null,
+        0xf6ff43,
+        "bold"
+      );
+    }
   }
 
   if (xingo.includes(message[0])) {
-    room.kickPlayer(
-      player.id,
-      "❌ Racism is not tolerated in this room.",
-      false
-    );
+    room.kickPlayer(player.id, "❌ Nada de eso mijo, moderese.", false);
     room.sendAnnouncement(
       centerText("Player " + player.name + " talked shit"),
       player.id,
@@ -3666,11 +3803,7 @@ room.onPlayerChat = function (player, message) {
     return false;
   }
   if (xingo.includes(message[1])) {
-    room.kickPlayer(
-      player.id,
-      "❌ Racism is not tolerated in this room.",
-      false
-    );
+    room.kickPlayer(player.id, "❌ Nada de eso mijo, moderese.", false);
     room.sendAnnouncement(
       centerText("Player " + player.name + " talked shit"),
       player.id,
@@ -3680,11 +3813,7 @@ room.onPlayerChat = function (player, message) {
     return false;
   }
   if (xingo.includes(message[2])) {
-    room.kickPlayer(
-      player.id,
-      "❌ Racism is not tolerated in this room.",
-      false
-    );
+    room.kickPlayer(player.id, "❌ Nada de eso mijo, moderese.", false);
     room.sendAnnouncement(
       centerText("Player " + player.name + " talked shit"),
       player.id,
@@ -3694,11 +3823,7 @@ room.onPlayerChat = function (player, message) {
     return false;
   }
   if (xingo.includes(message[3])) {
-    room.kickPlayer(
-      player.id,
-      "❌ Racism is not tolerated in this room.",
-      false
-    );
+    room.kickPlayer(player.id, "❌ Nada de eso mijo, moderese.", false);
     room.sendAnnouncement(
       centerText("Player " + player.name + " talked shit"),
       player.id,
@@ -3708,11 +3833,7 @@ room.onPlayerChat = function (player, message) {
     return false;
   }
   if (xingo.includes(message[4])) {
-    room.kickPlayer(
-      player.id,
-      "❌ Racism is not tolerated in this room.",
-      false
-    );
+    room.kickPlayer(player.id, "❌ Nada de eso mijo, moderese.", false);
     room.sendAnnouncement(
       centerText("Player " + player.name + " talked shit"),
       player.id,
@@ -3722,11 +3843,7 @@ room.onPlayerChat = function (player, message) {
     return false;
   }
   if (xingo.includes(message[5])) {
-    room.kickPlayer(
-      player.id,
-      "❌ Racism is not tolerated in this room.",
-      false
-    );
+    room.kickPlayer(player.id, "❌ Nada de eso mijo, moderese.", false);
     room.sendAnnouncement(
       centerText("Player " + player.name + " talked shit"),
       player.id,
@@ -3900,7 +4017,7 @@ room.onPlayerChat = function (player, message) {
           redCaptainChoice = "top";
           clearTimeout(timeOutCap);
           room.sendAnnouncement(
-            player.name + " chose first from the list!",
+            player.name + " escogio los primeros de la lista!",
             null,
             0x55bae2,
             "normal"
@@ -3912,7 +4029,7 @@ room.onPlayerChat = function (player, message) {
           redCaptainChoice = "random";
           clearTimeout(timeOutCap);
           room.sendAnnouncement(
-            player.name + " chose a random team",
+            player.name + " escogio equipo aleatorio",
             null,
             0x55bae2,
             "normal"
@@ -3923,7 +4040,7 @@ room.onPlayerChat = function (player, message) {
           redCaptainChoice = "bottom";
           clearTimeout(timeOutCap);
           room.sendAnnouncement(
-            player.name + " chose the last one on the list!",
+            player.name + " escogio a los ultimos de la fila!",
             null,
             0x55bae2,
             "normal"
@@ -3935,7 +4052,7 @@ room.onPlayerChat = function (player, message) {
             Number.parseInt(message[0]) < 1
           ) {
             room.sendAnnouncement(
-              "[⚠️] Oops! The number you chose is invalid.",
+              "[⚠️] Oops! El numero que escogiste es invalido.",
               player.id,
               null,
               0xfaca29,
@@ -3967,7 +4084,7 @@ room.onPlayerChat = function (player, message) {
           blueCaptainChoice = "top";
           clearTimeout(timeOutCap);
           room.sendAnnouncement(
-            player.name + " chose first from the list!",
+            player.name + " escogio a los primeros de la lista!",
             null,
             0x55bae2,
             "normal"
@@ -3978,7 +4095,7 @@ room.onPlayerChat = function (player, message) {
           blueCaptainChoice = "random";
           clearTimeout(timeOutCap);
           room.sendAnnouncement(
-            player.name + " chose a random team",
+            player.name + " escogio equipo aleatorio",
             null,
             0x55bae2,
             "normal"
@@ -3989,7 +4106,7 @@ room.onPlayerChat = function (player, message) {
           blueCaptainChoice = "bottom";
           clearTimeout(timeOutCap);
           room.sendAnnouncement(
-            player.name + " chose the last one on the list!",
+            player.name + " escogio a los ultimos de la fila!",
             null,
             0x55bae2,
             "normal"
@@ -4001,7 +4118,7 @@ room.onPlayerChat = function (player, message) {
             Number.parseInt(message[0]) < 1
           ) {
             room.sendAnnouncement(
-              "[⚠️] Oops! The number you chose is invalid.",
+              "[⚠️] Oops! El numero que elegiste es invalido.",
               player.id,
               null,
               0xfaca29,
