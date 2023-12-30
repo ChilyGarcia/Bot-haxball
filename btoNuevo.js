@@ -2,7 +2,7 @@
 const roomName = "☕[AF] Santos F.C Hax 4v4 24/7 ⬛⬜ ☕";
 const botName = "Santos F.C";
 const maxPlayers = 24; // maximum number of players in the room
-const roomPublic = true; // true = public room | false = players only enter via the room link (it does not appear in the room list)
+const roomPublic = false; // true = public room | false = players only enter via the room link (it does not appear in the room list)
 const geo = [
   { lat: -22.9201, lon: -43.3307, code: "br" },
   { code: "FR", lat: 46.2, lon: 2.2 },
@@ -11,6 +11,68 @@ const geo = [
   { code: "PT", lat: 39.3, lon: -8.2 },
 ];
 // place your geoloc, so as not to have a leaky room
+
+const votedPlayers = new Set(); //The set of players which were voted.
+var votekickInfoInterval; //The interval for information message about votekick.
+var votekickInfoIntervalTime = 180000; //The time for the interval to be reset. (180000 means 180 seconds, you are free to change it according to your preference.)
+let votekickTimes = {}; //This holds the amount of votes which the players used.
+let votekickCount = {}; //This holds the amount of votes which were done against each of the players.
+var votekickTimeout = 60000; //If votekick doesn't reach a result, then it's reset after 60 seconds. (60000 means 60 seconds, you are free to change it according to your preference.)
+var PlayerFound = false; //If voted player doesn't exist, then this is false. Initial value: false.
+
+function votekickRemove(player) {
+  votekickCount[player.id] = [];
+  var players = room.getPlayerList();
+  for (var i = 0; i < players.length; i++) {
+    if (votedPlayers.has(players[i].id) == true) {
+      votedPlayers.delete(players[i].id);
+    }
+  }
+}
+
+function votekickCheck(player) {
+  if (room.getPlayerList().length % 2 == 0) {
+    if (
+      votekickCount[player.id].length >=
+      (room.getPlayerList().length * 1) / 2
+    ) {
+      room.kickPlayer(player.id, "You've kicked by vote.", false);
+    } else {
+      room.sendAnnouncement(
+        "🗳️ " +
+          player.name +
+          " : " +
+          votekickCount[player.id].length +
+          "/" +
+          (room.getPlayerList().length * 1) / 2,
+        null,
+        0xffffff,
+        "normal",
+        1
+      );
+    }
+  } else if (room.getPlayerList().length % 2 == 1) {
+    if (
+      votekickCount[player.id].length >=
+      Math.round((room.getPlayerList().length * 1) / 2)
+    ) {
+      room.kickPlayer(player.id, "You've kicked by vote.", false);
+    } else {
+      room.sendAnnouncement(
+        "🗳️ " +
+          player.name +
+          " : " +
+          votekickCount[player.id].length +
+          "/" +
+          Math.round((room.getPlayerList().length * 1) / 2),
+        null,
+        0xffffff,
+        "normal",
+        1
+      );
+    }
+  }
+}
 
 let lastUsed = {};
 const room = HBInit({
@@ -315,6 +377,14 @@ var statInterval = 6;
 loadMap(practiceMap, scoreLimitPractice, timeLimitPractice);
 
 /* OBJECTS */
+
+function GetPlayer(id) {
+  for (var i = 0; i < ListaDeJugadores.length; i++) {
+    if (ListaDeJugadores[i].id == id) {
+      return ListaDeJugadores[i];
+    }
+  }
+}
 
 function Goal(time, team, striker, assist) {
   this.time = time;
@@ -1538,6 +1608,7 @@ setInterval(() => {
 /* PLAYER MOVEMENT */
 
 room.onPlayerJoin = function (player) {
+  votekickCount[player.id] = []; //This is needed to hold the amount of the votes against a player.
   console.log("---------------------------------------------------");
   console.log("[📢] Nick: " + player.name);
   console.log("[📢] Conn: " + player.conn);
@@ -1674,6 +1745,8 @@ room.onPlayerTeamChange = function (changedPlayer, byPlayer) {
 };
 
 room.onPlayerLeave = function (player) {
+  delete votekickCount[player.id]; //Delete the votes used against the player.
+  delete votekickTimes[player.id]; //Delete the votes used by the player.
   if (
     TeamR.findIndex((red) => red.id == player.id) == 0 &&
     inChooseMode &&
@@ -1706,42 +1779,16 @@ room.onPlayerKicked = function (kickedPlayer, reason, ban, byPlayer) {
 
 /* PLAYER ACTIVITY */
 
-function votekickCheck(player){
-  if((room.getPlayerList().length)%2 == 0){
-      if(JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes >= (room.getPlayerList().length)*1/2){
-    room.kickPlayer(player.id,"👥❌ El voto popular ha dicho que te banee. Adiós!",true);
-}
-    else{
-  var VotosRestantes = (room.getPlayerList().length)*1/2 - JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes
-    console.log(new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds() + "." + new Date().getMilliseconds() + " 🗳️ " + player.name + " : " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + (room.getPlayerList().length)*1/2);
-    room.sendAnnouncement("🗳️ Han votado a " + player.name + " para que sea baneado. ❌👤",null,0xFFD500,"normal",1);
-    room.sendAnnouncement("⚊⚊⚊⚊⚊⚊ VOTOS TOTALES: " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + (room.getPlayerList().length)*1/2 + " ⚊⚊⚊⚊⚊⚊ VOTOS RESTANTES: " + VotosRestantes,null,0xFFFF00,"bold",1);
-    room.sendAnnouncement("🗳️ Escribe: 'expulsar IDdeJugador' para votar. Para ver los Nº de ID, escribe # en la barra de chat.",null,0xFFFFFF,"normal",1);
-}
-  }
-  else if((room.getPlayerList().length)%2 == 1){
-      if(JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes >= Math.round((room.getPlayerList().length)*1/2)){
-    room.kickPlayer(player.id,"👥❌ El voto popular ha dicho que te banee. Adiós!",true);
-}
-    else{
-var VotosRestantes = (room.getPlayerList().length)*1/2 - JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes
-    console.log(new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds() + "." + new Date().getMilliseconds() + " 🗳️ " + player.name + " : " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + Math.round((room.getPlayerList().length)*1/2));
-    room.sendAnnouncement("🗳️ Han votado a " + player.name + " para que sea baneado. ❌👤",null,0xFFD500,"normal",1);
-    room.sendAnnouncement("⚊⚊⚊⚊⚊⚊ VOTOS TOTALES: " + JSON.parse(localStorage.getItem(GetPlayer(player.id).auth)).votes + "/" + Math.round((room.getPlayerList().length)*1/2) + " ⚊⚊⚊⚊⚊⚊ VOTOS RESTANTES: " + VotosRestantes,null,0xFFD500,"bold",1);
-    room.sendAnnouncement("🗳️ Escribe: 'expulsar IDdeJugador' para votar. Para ver los Nº de ID, escribe # en la barra de chat.",null,0xFFFFFF,"normal",1);
-}
-  }
-}
-
 room.onPlayerChat = function (player, message) {
-  if (message.startsWith("expulsar ") == true) {
+  if (message.startsWith("!votekick ") == true) {
     playerFound = false;
-    Jugadores = room.getPlayerList();
-    for (var i = 0; i < Jugadores.length; i++) {
-      if (message === "expulsar " + Jugadores[i].id) {
+    players = room.getPlayerList();
+    for (var i = 0; i < players.length; i++) {
+      if (message === "!votekick " + players[i].name) {
         if (room.getPlayerList().length < 4) {
+          //If there's less than 4 players. Don't do vote because of trolls can easily abuse it.
           room.sendAnnouncement(
-            "No puedes votar a otro jugador cuando hay menos de 4 personas en el host.",
+            "There's not enough players to do voting.",
             player.id,
             0xff0000,
             "bold",
@@ -1749,9 +1796,10 @@ room.onPlayerChat = function (player, message) {
           );
           return false;
         }
-        if (Jugadores[i].id == player.id) {
+        if (players[i].name == player.name) {
+          //You shouldn't vote yourself.
           room.sendAnnouncement(
-            "No te puedes votar a vos mismo.",
+            "You cannot vote yourself.",
             player.id,
             0xff0000,
             "bold",
@@ -1759,9 +1807,10 @@ room.onPlayerChat = function (player, message) {
           );
           return false;
         }
-        if (votedPlayers.has(GetPlayer(player.id).auth)) {
+        if (votedPlayers.has(player.id)) {
+          //If you voted a player, then you have to wait the timeout to finish.
           room.sendAnnouncement(
-            "No puedes votar a otro jugador más de una vez por minuto.",
+            "Please wait " + votekickTimeout / 1000 + " seconds to vote again.",
             player.id,
             0xff0000,
             "bold",
@@ -1769,46 +1818,27 @@ room.onPlayerChat = function (player, message) {
           );
           return false;
         }
-        votedPlayers.add(GetPlayer(player.id).auth);
+        votedPlayers.add(player.id);
         playerFound = true;
-        if (
-          JSON.parse(localStorage.getItem(GetPlayer(Jugadores[i].id).auth)) !=
-          null
-        ) {
-          var v = JSON.parse(
-            localStorage.getItem(GetPlayer(Jugadores[i].id).auth)
-          ).votes;
-          v++;
-          var playerObject = {
-            auth: GetPlayer(Jugadores[i].id).auth,
-            votes: v,
-          };
-          localStorage.setItem(
-            GetPlayer(Jugadores[i].id).auth,
-            JSON.stringify(playerObject)
-          );
-
-          if (v == 1) {
-            setTimeout(function () {
-              if (v < Jugadores.length) {
-                votekickRemove(player);
-              }
-            }, votekickTimeout);
-          }
+        if (votekickCount[players[i].id].indexOf(players[i]) === -1) {
+          votekickCount[players[i].id].push(player);
         }
-        votekickCheck(Jugadores[i]);
+        votekickTimes[players[i].id] = setTimeout(
+          votekickRemove,
+          votekickTimeout,
+          players[i]
+        ); //Start the timeout after the player was voted.
+        votekickCheck(players[i]); //Do votekick check for the player who was voted.
       }
     }
     if (playerFound === false) {
-      Jugadores = room.getPlayerList();
+      //If there's no such a player, then here is called.
       playersString = "";
-      for (i = 0; i < Jugadores.length; i++) {
-        playersString =
-          playersString + Jugadores[i].name + ": [" + Jugadores[i].id + "]\n";
+      for (i = 0; i < players.length; i++) {
+        playersString = playersString + players[i].name + ", ";
       }
       room.sendAnnouncement(
-        "No existe el ID de ese jugador, acá la lista de jugadores votables:" +
-          "\n" +
+        "There's no such a player. Here is the list for available players: " +
           playersString,
         player.id,
         0xffff00,
@@ -1818,7 +1848,6 @@ room.onPlayerChat = function (player, message) {
     }
     return false;
   }
-
   if (message === "!ids") {
     let players = room.getPlayerList();
     for (let p of players) {
@@ -4601,3 +4630,6 @@ msg1 = setInterval(function () {
     "normal"
   );
 }, msg1Time);
+
+
+votekickInfoInterval = setInterval(function(){room.sendAnnouncement("You can type !votekick [player_name] (for example: !votekick IvanBre) to kick a player in the room by voting. The voting system does not work if there are less than 4 people in the room.",null,0xFFFFFF,"normal",1);},votekickInfoIntervalTime);
