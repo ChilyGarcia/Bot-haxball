@@ -2,7 +2,7 @@
 const roomName = "☕[AF] Santos F.C Hax 4v4 24/7 ⬛⬜ ☕";
 const botName = "Santos F.C";
 const maxPlayers = 24; // maximum number of players in the room
-const roomPublic = false; // true = public room | false = players only enter via the room link (it does not appear in the room list)
+const roomPublic = true; // true = public room | false = players only enter via the room link (it does not appear in the room list)
 const geo = [
   { lat: -22.9201, lon: -43.3307, code: "br" },
   { code: "FR", lat: 46.2, lon: 2.2 },
@@ -11,6 +11,108 @@ const geo = [
   { code: "PT", lat: 39.3, lon: -8.2 },
 ];
 // place your geoloc, so as not to have a leaky room
+
+// VIP
+var colors = {
+  onPlayerChat: {
+    Player: [
+      [0xffffff, 0x9ae1ff],
+      [0xffdb72, 0x9ae1ff],
+    ],
+  },
+  onPlayerJoin: {
+    VIP: 0x9ae1ff,
+  },
+  onPlayerLeave: {
+    VIP: 0x9ae1ff,
+  },
+};
+
+var fonts = {
+  onPlayerChat: {
+    Player: [
+      ["normal", "bold"],
+      ["bold", "bold"],
+    ],
+  },
+  onPlayerJoin: {
+    VIP: "bold",
+  },
+  onPlayerLeave: {
+    VIP: "bold",
+  },
+};
+
+var sounds = {
+  onPlayerChat: {
+    Player: [
+      [1, 1],
+      [1, 2],
+    ],
+  },
+  onPlayerJoin: {
+    VIP: 1,
+  },
+  onPlayerLeave: {
+    VIP: 1,
+  },
+};
+
+var messages = {
+  onPlayerChat: {
+    Player: [
+      ["[PLAYER]", "[ VIP ] 💎"],
+      ["[ADMIN]", "[ VIP ] 💎[ADMIN]"],
+    ],
+  },
+  onPlayerJoin: {
+    VIP: "✅ El usuario VIP ha entrado a la sala a enseñarles a jugar:",
+  },
+  onPlayerLeave: {
+    VIP: "➡️ El jugador VIP se ha ido, dejo de hijos a muchos de acá:",
+  },
+};
+
+var roomObject = {
+  maxPlayers: 4,
+  noPlayer: true,
+  public: false,
+  roomName: "VIP Roles",
+};
+
+var vips = {
+  name: ["ds3", "Romario"],
+  auth: ["K5--Pj0lZfG0gt4BL1re0KtRkRbcy7tvA3qZ_ccKZd4", "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8"],
+  id: [],
+};
+
+var playerList = [];
+
+function checkJoiningHistory(player) {
+  return (
+    playerList.length > 0 &&
+    playerList.filter(
+      (p) =>
+        p.name == player.name || p.auth == player.auth || p.conn == player.conn
+    ).length > 0
+  );
+}
+
+function checkPlayerAuth(auth) {
+  return vips.auth.length > 0 && vips.auth.includes(auth);
+}
+
+function checkPlayerID(id) {
+  return vips.id.length > 0 && vips.id.includes(id);
+}
+
+function setPlayer(name, auth, conn) {
+  playerList.push({ name: name, auth: auth, conn: conn });
+}
+
+// - - - - - - - - -- -- - - - - --
+
+var playerListDuplicados = {};
 
 const votedPlayers = new Set(); //The set of players which were voted.
 var votekickInfoInterval; //The interval for information message about votekick.
@@ -1608,7 +1710,67 @@ setInterval(() => {
 /* PLAYER MOVEMENT */
 
 room.onPlayerJoin = function (player) {
+  // VIP
+
+  // Verificar si el jugador está en la lista por nombre o autenticación
+  var checkName = vips.auth.length > 0 && vips.auth.includes(player.auth);
+  var checkAuth = vips.name.length > 0 && vips.name.includes(player.name);
+
+  if (checkAuth && checkName) {
+    // Asignarle el rol VIP
+    vips.id.push(player.id);
+
+    // Enviar anuncio VIP
+    room.sendAnnouncement(
+      `${messages.onPlayerJoin.VIP} ${player.name}`,
+      null,
+      colors.onPlayerJoin.VIP,
+      fonts.onPlayerJoin.VIP,
+      sounds.onPlayerJoin.VIP
+    );
+  }
+
+  // Actualizar la lista de jugadores
+  setPlayer(player.name, player.auth, player.conn);
+  if (playerList.length == 0) {
+    setPlayer(player.name, player.auth, player.conn);
+  } else {
+    var data = checkJoiningHistory(player);
+    if (data) {
+      var checkAuth = checkPlayerAuth(player.auth);
+      var checkID = checkPlayerID(player.id);
+      if (checkAuth && !checkID) {
+        vips.id.push(player.id);
+        room.sendAnnouncement(
+          `${messages.onPlayerJoin.VIP} ${player.name}`,
+          null,
+          colors.onPlayerJoin.VIP,
+          fonts.onPlayerJoin.VIP,
+          sounds.onPlayerJoin.VIP
+        );
+      }
+    } else {
+      setPlayer(player.name, player.auth, player.conn);
+      var checkAuth = checkPlayerAuth(player.auth);
+      var checkID = checkPlayerID(player.id);
+      if (checkAuth && !checkID) {
+        vips.id.push(player.id);
+        room.sendAnnouncement(
+          `${messages.onPlayerJoin.VIP} ${player.name}`,
+          null,
+          colors.onPlayerJoin.VIP,
+          fonts.onPlayerJoin.VIP,
+          sounds.onPlayerJoin.VIP
+        );
+      }
+    }
+  }
+
+  // -- - - - -
+
+  //Votekikc
   votekickCount[player.id] = []; //This is needed to hold the amount of the votes against a player.
+
   console.log("---------------------------------------------------");
   console.log("[📢] Nick: " + player.name);
   console.log("[📢] Conn: " + player.conn);
@@ -1745,6 +1907,24 @@ room.onPlayerTeamChange = function (changedPlayer, byPlayer) {
 };
 
 room.onPlayerLeave = function (player) {
+  // VIP
+
+  if (checkPlayerID(player.id)) {
+    var index = vips.id.findIndex((p) => p == player.id);
+    if (index !== -1) {
+      room.sendAnnouncement(
+        `${messages.onPlayerLeave.VIP} ${player.name}`,
+        null,
+        colors.onPlayerLeave.VIP,
+        fonts.onPlayerLeave.VIP,
+        sounds.onPlayerLeave.VIP
+      );
+      vips.id.splice(index, 1);
+    }
+  }
+
+  // - - - - --
+
   delete votekickCount[player.id]; //Delete the votes used against the player.
   delete votekickTimes[player.id]; //Delete the votes used by the player.
   if (
@@ -1780,6 +1960,29 @@ room.onPlayerKicked = function (kickedPlayer, reason, ban, byPlayer) {
 /* PLAYER ACTIVITY */
 
 room.onPlayerChat = function (player, message) {
+  // VIP
+
+  room.sendAnnouncement(
+    `${
+      messages.onPlayerChat.Player[Number(player.admin)][
+        Number(checkPlayerID(player.id))
+      ]
+    } ${player.name}: ${message}`,
+    null,
+    colors.onPlayerChat.Player[Number(player.admin)][
+      Number(checkPlayerID(player.id))
+    ],
+    fonts.onPlayerChat.Player[Number(player.admin)][
+      Number(checkPlayerID(player.id))
+    ],
+    sounds.onPlayerChat.Player[Number(player.admin)][
+      Number(checkPlayerID(player.id))
+    ]
+  );
+  return false;
+
+  // - - - - - - - -
+
   if (message.startsWith("!votekick ") == true) {
     playerFound = false;
     players = room.getPlayerList();
@@ -3813,7 +4016,7 @@ room.onPlayerChat = function (player, message) {
         "bold"
       );
       room.sendAnnouncement(
-        "                                        💬 Discord Link: ➡ (Proximamente) ⬅",
+        "                                        💬 Discord Link: ➡ https://discord.gg/JkQ7YBA3vx ⬅",
         null,
         0xf6ff43,
         "bold"
@@ -4631,5 +4834,12 @@ msg1 = setInterval(function () {
   );
 }, msg1Time);
 
-
-votekickInfoInterval = setInterval(function(){room.sendAnnouncement("You can type !votekick [player_name] (for example: !votekick IvanBre) to kick a player in the room by voting. The voting system does not work if there are less than 4 people in the room.",null,0xFFFFFF,"normal",1);},votekickInfoIntervalTime);
+votekickInfoInterval = setInterval(function () {
+  room.sendAnnouncement(
+    "You can type !votekick [player_name] (for example: !votekick IvanBre) to kick a player in the room by voting. The voting system does not work if there are less than 4 people in the room.",
+    null,
+    0xffffff,
+    "normal",
+    1
+  );
+}, votekickInfoIntervalTime);
