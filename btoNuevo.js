@@ -137,16 +137,21 @@ function votekickCheck(player) {
       votekickCount[player.id].length >=
       (room.getPlayerList().length * 1) / 2
     ) {
-      room.kickPlayer(player.id, "Has sido expulsado por votacion, simio 🐒", false);
+      room.kickPlayer(
+        player.id,
+        "Has sido expulsado por votacion, simio 🐒",
+        false
+      );
     } else {
       room.sendAnnouncement(
-        "🗳️ Se ha iniciado votacion para expulsar a" +
+        "🗳️ Se ha iniciado votacion para expulsar a " +
           player.name +
           " : " +
           votekickCount[player.id].length +
           "/" +
-          (room.getPlayerList().length * 1) / 2 
-          ,
+          (room.getPlayerList().length * 1) / 2 +
+          " para votar usa !votekick " +
+          player.name,
         null,
         0xffffff,
         "normal",
@@ -158,15 +163,21 @@ function votekickCheck(player) {
       votekickCount[player.id].length >=
       Math.round((room.getPlayerList().length * 1) / 2)
     ) {
-      room.kickPlayer(player.id, "You've kicked by vote.", false);
+      room.kickPlayer(
+        player.id,
+        "Has sido expulsado por votacion, simio 🐒",
+        false
+      );
     } else {
       room.sendAnnouncement(
-        "🗳️ " +
+        "🗳️ Se ha iniciado votacion para expulsar a " +
           player.name +
           " : " +
           votekickCount[player.id].length +
           "/" +
-          Math.round((room.getPlayerList().length * 1) / 2),
+          Math.round((room.getPlayerList().length * 1) / 2) +
+          " para votar usa !votekick " +
+          player.name,
         null,
         0xffffff,
         "normal",
@@ -1980,7 +1991,9 @@ room.onPlayerChat = function (player, message) {
         if (votedPlayers.has(player.id)) {
           //If you voted a player, then you have to wait the timeout to finish.
           room.sendAnnouncement(
-            "Por favor espera " + votekickTimeout / 1000 + " segundos para votar de nuevo.",
+            "Por favor espera " +
+              votekickTimeout / 1000 +
+              " segundos para votar de nuevo.",
             player.id,
             0xff0000,
             "bold",
@@ -2265,8 +2278,7 @@ room.onPlayerChat = function (player, message) {
     }
 
     return false;
-  } 
-  else if (["!afks", "!afklist"].includes(message[0].toLowerCase())) {
+  } else if (["!afks", "!afklist"].includes(message[0].toLowerCase())) {
     var cstm = "[PV] AFK List : ";
     for (var i = 0; i < extendedP.length; i++) {
       if (
@@ -2925,10 +2937,11 @@ room.onPlayerChat = function (player, message) {
     // Comprobar si el usuario ha usado el comando en los últimos 2 minutos
     if (lastUsed[user] && now - lastUsed[user] < 2 * 60 * 1000) {
       room.sendAnnouncement(
-        "Por favor espera 2 minutos antes de usar este comando de nuevo.",
-        null,
-        0xf6ff43,
-        "bold"
+        `Por favor espera unos minutos antes de usar de nuevo este comando!`,
+        player.id,
+        0xff8000,
+        "bold",
+        2
       );
     } else {
       // Actualizar la última vez que se usó el comando
@@ -3380,13 +3393,15 @@ room.onPlayerChat = function (player, message) {
       chatColor = "0x00ff00";
 
       if (vips.auth.includes(getAuth(player))) {
-        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
+        announcement =
+          "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 150) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Bota d'or」";
@@ -3397,25 +3412,27 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Bota d'or」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Bota d'or」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 120) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
       chatColor = "0x00ff00";
 
       if (vips.auth.includes(getAuth(player))) {
-        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
+        announcement =
+          "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 80) {
-
     } else if (stats[Ss.GL] > 60) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「El mejor」";
       chatColor = "0xff0066";
@@ -3425,12 +3442,12 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「El mejor」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「El mejor」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 55) {
-      
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Imparable」";
       chatColor = "0xff0066";
 
@@ -3439,12 +3456,12 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Imparable」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Imparable」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 50) {
-
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「NeyJr」";
       chatColor = "0xff0066";
 
@@ -3453,11 +3470,11 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「NeyJr」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「NeyJr」";
           chatColor = "0xff7900";
-        } 
+        }
       }
-      
     } else if (stats[Ss.GL] > 40) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Goat」";
       chatColor = "0xEAC274";
@@ -3467,9 +3484,10 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Goat」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Goat」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 35) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Prime」";
@@ -3480,12 +3498,12 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Prime」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Prime」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 30) {
-
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
       chatColor = "0xEAC274";
 
@@ -3494,11 +3512,11 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
           chatColor = "0xff7900";
-        } 
+        }
       }
-
     } else if (stats[Ss.GL] > 20) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Campeón」";
       chatColor = "0xA2A2A2";
@@ -3508,9 +3526,10 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Campeón」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Campeón」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 15) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Titular」";
@@ -3521,12 +3540,12 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Titular」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Titular」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 10) {
-
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Killer」";
       chatColor = "0xA2A2A2";
 
@@ -3535,10 +3554,11 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Killer」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Killer」";
 
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 8) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
@@ -3549,9 +3569,10 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 5) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
@@ -3562,9 +3583,10 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else if (stats[Ss.GL] > 2) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Principiante」";
@@ -3575,9 +3597,12 @@ room.onPlayerChat = function (player, message) {
         chatColor = "0x00ffff";
 
         if (player.admin) {
-          announcement = "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Principiante」";
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ] [⚽: " +
+            stats[Ss.GL] +
+            "]  ·「Principiante」";
           chatColor = "0xff7900";
-        } 
+        }
       }
     } else {
       announcement += "「Meme nuevo」";
@@ -3587,13 +3612,14 @@ room.onPlayerChat = function (player, message) {
     console.log(chatColor);
     console.log(originalMessage);
     announcement += player.name + ": " + originalMessage;
-    room.sendAnnouncement(announcement, null, chatColor,
-    fonts.onPlayerChat.Player[Number(player.admin)][
-      Number(checkPlayerID(player.id))
-    ],
-    sounds.onPlayerChat.Player[Number(player.admin)][
-      Number(checkPlayerID(player.id))
-    ]);
+    room.sendAnnouncement(
+      announcement,
+      null,
+      chatColor,
+      fonts.onPlayerChat.Player[Number(player.admin)][
+        Number(checkPlayerID(player.id))
+      ]
+    );
     return false;
   } else {
     room.sendAnnouncement(
