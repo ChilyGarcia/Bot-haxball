@@ -10,21 +10,21 @@ const geo = [
   { code: "GB", lat: 55.3, lon: -3.4 },
   { code: "PT", lat: 39.3, lon: -8.2 },
 ];
-// place your geoloc, so as not to have a leaky room
 
-// VIP
+// VIPS
+
 var colors = {
   onPlayerChat: {
     Player: [
-      [0xffffff, 0x9ae1ff],
-      [0xffdb72, 0x9ae1ff],
+      [0xffffff, 0x00ffff],
+      [0xffdb72, 0x00ffff],
     ],
   },
   onPlayerJoin: {
-    VIP: 0x9ae1ff,
+    VIP: 0x00ffff,
   },
   onPlayerLeave: {
-    VIP: 0x9ae1ff,
+    VIP: 0x00ffff,
   },
 };
 
@@ -61,28 +61,27 @@ var sounds = {
 var messages = {
   onPlayerChat: {
     Player: [
-      ["[PLAYER]", "[ VIP ] 💎"],
-      ["[ADMIN]", "[ VIP ] 💎[ADMIN]"],
+      ["[PLAYER]", " [ VIP ] 💎"],
+      ["[ADMIN]", " [ VIP ] 💎 [ ADMIN ] 👑"],
     ],
   },
   onPlayerJoin: {
-    VIP: "✅ El usuario VIP ha entrado a la sala a enseñarles a jugar:",
+    VIP: "✅ El usuario VIP ha entrado a la sala, viene a dejar de hijos a varios:",
   },
   onPlayerLeave: {
-    VIP: "➡️ El jugador VIP se ha ido, dejo de hijos a muchos de acá:",
+    VIP: "➡️ El usuario VIP ha salido de la sala, dejo de hijos a varios:",
   },
-};
-
-var roomObject = {
-  maxPlayers: 4,
-  noPlayer: true,
-  public: false,
-  roomName: "VIP Roles",
 };
 
 var vips = {
-  name: ["ds3", "Romario"],
-  auth: ["K5--Pj0lZfG0gt4BL1re0KtRkRbcy7tvA3qZ_ccKZd4", "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8"],
+  name: ["ds3", "ꜱꜰᴄ | ʀᴏᴍᴀʀɪᴏ"],
+  auth: [
+    "K5--Pj0lZfG0gt4BL1re0KtRkRbcy7tvA3qZ_ccKZd4",
+    "XSI_N3_mU6FNLaFZ_0LTjsDY0jRNDRTh2CefSbMGmVU",
+    "v3KhYu8V5_q2a_-XMn0vbE3IDrtjE_6q8FZ8xQ-6ZH0",
+    "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8",
+    "IpfpDeppysc_BTPbz7DSjBMTLQMqNW3i0Vi1rao7VFQ",
+  ],
   id: [],
 };
 
@@ -110,9 +109,9 @@ function setPlayer(name, auth, conn) {
   playerList.push({ name: name, auth: auth, conn: conn });
 }
 
-// - - - - - - - - -- -- - - - - --
+/// -- - - - - - -
 
-var playerListDuplicados = {};
+// place your geoloc, so as not to have a leaky room
 
 const votedPlayers = new Set(); //The set of players which were voted.
 var votekickInfoInterval; //The interval for information message about votekick.
@@ -138,15 +137,16 @@ function votekickCheck(player) {
       votekickCount[player.id].length >=
       (room.getPlayerList().length * 1) / 2
     ) {
-      room.kickPlayer(player.id, "You've kicked by vote.", false);
+      room.kickPlayer(player.id, "Has sido expulsado por votacion, simio 🐒", false);
     } else {
       room.sendAnnouncement(
-        "🗳️ " +
+        "🗳️ Se ha iniciado votacion para expulsar a" +
           player.name +
           " : " +
           votekickCount[player.id].length +
           "/" +
-          (room.getPlayerList().length * 1) / 2,
+          (room.getPlayerList().length * 1) / 2 
+          ,
         null,
         0xffffff,
         "normal",
@@ -1710,8 +1710,6 @@ setInterval(() => {
 /* PLAYER MOVEMENT */
 
 room.onPlayerJoin = function (player) {
-  // VIP
-
   // Verificar si el jugador está en la lista por nombre o autenticación
   var checkName = vips.auth.length > 0 && vips.auth.includes(player.auth);
   var checkAuth = vips.name.length > 0 && vips.name.includes(player.name);
@@ -1766,11 +1764,7 @@ room.onPlayerJoin = function (player) {
     }
   }
 
-  // -- - - - -
-
-  //Votekikc
   votekickCount[player.id] = []; //This is needed to hold the amount of the votes against a player.
-
   console.log("---------------------------------------------------");
   console.log("[📢] Nick: " + player.name);
   console.log("[📢] Conn: " + player.conn);
@@ -1907,8 +1901,6 @@ room.onPlayerTeamChange = function (changedPlayer, byPlayer) {
 };
 
 room.onPlayerLeave = function (player) {
-  // VIP
-
   if (checkPlayerID(player.id)) {
     var index = vips.id.findIndex((p) => p == player.id);
     if (index !== -1) {
@@ -1922,8 +1914,6 @@ room.onPlayerLeave = function (player) {
       vips.id.splice(index, 1);
     }
   }
-
-  // - - - - --
 
   delete votekickCount[player.id]; //Delete the votes used against the player.
   delete votekickTimes[player.id]; //Delete the votes used by the player.
@@ -1960,29 +1950,6 @@ room.onPlayerKicked = function (kickedPlayer, reason, ban, byPlayer) {
 /* PLAYER ACTIVITY */
 
 room.onPlayerChat = function (player, message) {
-  // VIP
-
-  room.sendAnnouncement(
-    `${
-      messages.onPlayerChat.Player[Number(player.admin)][
-        Number(checkPlayerID(player.id))
-      ]
-    } ${player.name}: ${message}`,
-    null,
-    colors.onPlayerChat.Player[Number(player.admin)][
-      Number(checkPlayerID(player.id))
-    ],
-    fonts.onPlayerChat.Player[Number(player.admin)][
-      Number(checkPlayerID(player.id))
-    ],
-    sounds.onPlayerChat.Player[Number(player.admin)][
-      Number(checkPlayerID(player.id))
-    ]
-  );
-  return false;
-
-  // - - - - - - - -
-
   if (message.startsWith("!votekick ") == true) {
     playerFound = false;
     players = room.getPlayerList();
@@ -1991,7 +1958,7 @@ room.onPlayerChat = function (player, message) {
         if (room.getPlayerList().length < 4) {
           //If there's less than 4 players. Don't do vote because of trolls can easily abuse it.
           room.sendAnnouncement(
-            "There's not enough players to do voting.",
+            "No hay suficientes jugadores para votar.",
             player.id,
             0xff0000,
             "bold",
@@ -2002,7 +1969,7 @@ room.onPlayerChat = function (player, message) {
         if (players[i].name == player.name) {
           //You shouldn't vote yourself.
           room.sendAnnouncement(
-            "You cannot vote yourself.",
+            "No te puedes votar a ti mismo.",
             player.id,
             0xff0000,
             "bold",
@@ -2013,7 +1980,7 @@ room.onPlayerChat = function (player, message) {
         if (votedPlayers.has(player.id)) {
           //If you voted a player, then you have to wait the timeout to finish.
           room.sendAnnouncement(
-            "Please wait " + votekickTimeout / 1000 + " seconds to vote again.",
+            "Por favor espera " + votekickTimeout / 1000 + " segundos para votar de nuevo.",
             player.id,
             0xff0000,
             "bold",
@@ -2041,7 +2008,7 @@ room.onPlayerChat = function (player, message) {
         playersString = playersString + players[i].name + ", ";
       }
       room.sendAnnouncement(
-        "There's no such a player. Here is the list for available players: " +
+        "No existe tal jugador. Aquí está la lista de jugadores disponibles: " +
           playersString,
         player.id,
         0xffff00,
@@ -2051,6 +2018,7 @@ room.onPlayerChat = function (player, message) {
     }
     return false;
   }
+
   if (message === "!ids") {
     let players = room.getPlayerList();
     for (let p of players) {
@@ -2076,1053 +2044,11 @@ room.onPlayerChat = function (player, message) {
       });
       return false;
     } else {
-      room.sendAnnouncement("You're not on a team.", player.id);
+      room.sendAnnouncement("No estas en un equipo.", player.id);
     }
   }
   // SOCCER TEAMS //
 
-  if (message == "!bra") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!bra";
-        room.setTeamColors(
-          Team.RED,
-          0,
-          0x3347b3,
-          [0x018434, 0xf8de2e, 0xf8de2e]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Brazil]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!bra") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!bra";
-        room.setTeamColors(
-          Team.BLUE,
-          0,
-          0x3347b3,
-          [0x018434, 0xf8de2e, 0xf8de2e]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Brazil]! ",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!ger") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!ale";
-        room.setTeamColors(
-          Team.RED,
-          90,
-          0xffffff,
-          [0x121003, 0xc70000, 0xf5c600]
-        );
-        room.sendAnnouncement(
-          "El capitan del equipo rojo, " +
-            player.name +
-            ", escogio el uniforme [Germany]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!ger") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!ale";
-        room.setTeamColors(
-          Team.BLUE,
-          90,
-          0xffffff,
-          [0x121003, 0xc70000, 0xf5c600]
-        );
-        room.sendAnnouncement(
-          "El capitan del equipo azul, " +
-            player.name +
-            ", escogio el uniforme [Germany]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!arg") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!arg";
-        room.setTeamColors(
-          Team.RED,
-          90,
-          0xe3ac42,
-          [0x74acdf, 0xffffff, 0x74acdf]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Argentina]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!arg") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!arg";
-        room.setTeamColors(
-          Team.BLUE,
-          90,
-          0xe3ac42,
-          [0x74acdf, 0xffffff, 0x74acdf]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Argentina]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!spa") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!esp";
-        room.setTeamColors(
-          Team.RED,
-          0,
-          0xdba640,
-          [0x7b111a, 0x7b111a, 0x7b111a]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Spain]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!spa") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!esp";
-        room.setTeamColors(
-          Team.BLUE,
-          0,
-          0xdba640,
-          [0x7b111a, 0x7b111a, 0x7b111a]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Spain]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!por") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!por";
-        room.setTeamColors(
-          Team.RED,
-          120,
-          0xdba640,
-          [0x7b111a, 0x7b111a, 0x384f43]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", escolheu o uniforme de [Portugal]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!por") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!por";
-        room.setTeamColors(
-          Team.BLUE,
-          120,
-          0xdba640,
-          [0x7b111a, 0x7b111a, 0x384f43]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", escolheu o uniforme de [Portugal]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!ita") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!ita";
-        room.setTeamColors(
-          Team.RED,
-          60,
-          0xffffff,
-          [0x0249a8, 0x0366eb, 0x0082d3]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Italy]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!ita") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!ita";
-        room.setTeamColors(
-          Team.BLUE,
-          60,
-          0xffffff,
-          [0x0249a8, 0x0366eb, 0x0082d3]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Italy]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!uru") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!uru";
-        room.setTeamColors(
-          Team.RED,
-          0,
-          0xffffff,
-          [0x0082d3, 0x0082d3, 0x0082d3]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Uruguay]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!uru") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!uru";
-        room.setTeamColors(
-          Team.BLUE,
-          0,
-          0xffffff,
-          [0x0082d3, 0x0082d3, 0x0082d3]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Uruguay]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!fra") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!fra";
-        room.setTeamColors(
-          Team.RED,
-          0,
-          0xd19e1f,
-          [0x202c46, 0x202c46, 0x202c46]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [France]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!fra") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!fra";
-        room.setTeamColors(
-          Team.BLUE,
-          0,
-          0xd19e1f,
-          [0x202c46, 0x202c46, 0x202c46]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [France]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!eng") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!ing";
-        room.setTeamColors(
-          Team.RED,
-          90,
-          0x0f2544,
-          [0x408cff, 0xa1c6ff, 0xe0e4e9]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [England]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!eng") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!ing";
-        room.setTeamColors(
-          Team.BLUE,
-          90,
-          0x0f2544,
-          [0x408cff, 0xa1c6ff, 0xe0e4e9]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [England]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!bel") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!bel";
-        room.setTeamColors(
-          Team.RED,
-          90,
-          0xd19e1f,
-          [0x151619, 0x990011, 0x990011]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Belgium]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!bel") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!bel";
-        room.setTeamColors(
-          Team.BLUE,
-          90,
-          0xd19e1f,
-          [0x151619, 0x990011, 0x990011]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Belgium]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!net") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!hol";
-        room.setTeamColors(
-          Team.RED,
-          90,
-          0x2b0e09,
-          [0xdc6024, 0xdc6024, 0xdc6024]
-        );
-        room.sendAnnouncement(
-          "The captain of the red team, " +
-            player.name +
-            ", chose the uniform [Netherlands]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-  if (message == "!net") {
-    if (player.team == 2) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!hol";
-        room.setTeamColors(
-          Team.RED,
-          90,
-          0x2b0e09,
-          [0xdc6024, 0xdc6024, 0xdc6024]
-        );
-        room.sendAnnouncement(
-          "The captain of the blue team, " +
-            player.name +
-            ", chose the uniform [Netherlands]!",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-    }
-  }
-
-  if (message == "!bah") {
-    if (player.team == 1) {
-      if (player.id == TeamR[0].id) {
-        CaptainChoice = "!bah";
-        room.setTeamColors(
-          Team.RED,
-          0,
-          0xffffff,
-          [0x0a4ae8, 0xf20533, 0x0a4ae8]
-        );
-        room.sendAnnouncement(
-          player.name +
-            "The team captain, " +
-            player.name +
-            ", chose the uniform BAHIA! ",
-          null,
-          0x30f55f,
-          "bold"
-        );
-      }
-      if (message == "!bah") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!bah";
-            room.setTeamColors(
-              Team.BLUE,
-              0,
-              0xffffff,
-              [0x0a4ae8, 0xf20533, 0x0a4ae8]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform BAHIA! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!vit") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!vit";
-            room.setTeamColors(Team.RED, 90, 0xffffff, [0xff1d0d, 0x000000]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform VITÓRIA! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!vit") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!vit";
-            room.setTeamColors(Team.BLUE, 90, 0xffffff, [0xff1d0d, 0x000000]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform VITÓRIA! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!flu") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!flu";
-            room.setTeamColors(
-              Team.RED,
-              0,
-              0xffffff,
-              [0x2a524f, 0x871f39, 0x2a524f]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform FLUMINENSE! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!flu") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!flu";
-            room.setTeamColors(
-              Team.BLUE,
-              0,
-              0xffffff,
-              [0x2a524f, 0x871f39, 0x2a524f]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform FLUMINENSE! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!for") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!for";
-            room.setTeamColors(
-              Team.RED,
-              90,
-              0xffffff,
-              [0x182587, 0xe32026, 0x182587]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform FORTALEZA! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!for") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!for";
-            room.setTeamColors(
-              Team.BLUE,
-              90,
-              0xffffff,
-              [0x182587, 0xe32026, 0x182587]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform FORTALEZA! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!cap") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!cap";
-            room.setTeamColors(
-              Team.RED,
-              45,
-              0xffffff,
-              [0xe8153f, 0x000000, 0xe8153f]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform ATHLETICO PARANAENSE! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!cap") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!cap";
-            room.setTeamColors(
-              Team.BLUE,
-              45,
-              0xffffff,
-              [0xe8153f, 0x000000, 0xe8153f]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform ATHLETICO PARANAENSE! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!rem") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!rem";
-            room.setTeamColors(Team.RED, 90, 0xffffff, [0x000000]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform REMO! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!rem") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!rem";
-            room.setTeamColors(Team.BLUE, 90, 0xffffff, [0x000000]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform REMO! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!cui") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!cui";
-            room.setTeamColors(Team.RED, 90, 0xffffff, [0x217430, 0xf4d42f]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform CUIABÁ! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!cui") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!cui";
-            room.setTeamColors(Team.BLUE, 90, 0xffffff, [0x217430, 0xf4d42f]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform CUIABÁ! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!jvn") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!jvn";
-            room.setTeamColors(
-              Team.RED,
-              0,
-              0x00964b,
-              [0x00964b, 0xffffff, 0x00964b]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform JUVENTUDE! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!jvn") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!jvn";
-            room.setTeamColors(
-              Team.BLUE,
-              0,
-              0x00964b,
-              [0x00964b, 0xffffff, 0x00964b]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform JUVENTUDE! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!utd3") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!utd3";
-            room.setTeamColors(
-              Team.RED,
-              -37,
-              0xf0cf0d,
-              [0x1e416d, 0x235287, 0x1463a4]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform MANCHESTER UNITED 3º KIT! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!utd3") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!utd3";
-            room.setTeamColors(
-              Team.BLUE,
-              -37,
-              0xf0cf0d,
-              [0x1e416d, 0x235287, 0x1463a4]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform MANCHESTER UNITED 3º KIT! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!spo") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!spo";
-            room.setTeamColors(
-              Team.RED,
-              0,
-              0xffe600,
-              [0xff0d0d, 0x000000, 0xff0d0d]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform SPORT! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!spo") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!spo";
-            room.setTeamColors(
-              Team.BLUE,
-              0,
-              0xffe600,
-              [0xff0d0d, 0x000000, 0xff0d0d]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform SPORT! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!gol") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!gol";
-            room.setTeamColors(Team.RED, 90, 0x23cc4a, [0x0c4519]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform GOIÁS! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!gol") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!gol";
-            room.setTeamColors(Team.BLUE, 90, 0x23cc4a, [0x0c4519]);
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform GOIÁS! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!vas") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!vas";
-            room.setTeamColors(
-              Team.RED,
-              140,
-              0xff1212,
-              [0xffffff, 0x002033, 0xffffff]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform VASCO! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!vas") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!vas";
-            room.setTeamColors(
-              Team.BLUE,
-              140,
-              0xff1212,
-              [0xffffff, 0x002033, 0xffffff]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform VASCO! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!pen") {
-        if (player.team == 1) {
-          if (player.id == TeamR[0].id) {
-            CaptainChoice = "!pen";
-            room.setTeamColors(
-              Team.RED,
-              90,
-              0xffffff,
-              [0xfac904, 0x000000, 0xfac904]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform PENHÃROL! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-      if (message == "!pen") {
-        if (player.team == 2) {
-          if (player.id == TeamB[0].id) {
-            CaptainChoice = "!pen";
-            room.setTeamColors(
-              Team.BLUE,
-              90,
-              0xffffff,
-              [0xfac904, 0x000000, 0xfac904]
-            );
-            room.sendAnnouncement(
-              player.name +
-                "The team captain, " +
-                player.name +
-                ", chose the uniform PENHÃROL! ",
-              null,
-              0x30f55f,
-              "bold"
-            );
-          }
-        }
-      }
-
-      if (message.toLowerCase().substr(0, 10) == "!register ") {
-        setRegister(player, message.substr(10));
-        return false;
-      }
-
-      // !login senha
-      if (message.toLowerCase().substr(0, 7) == "!login ") {
-        getLogin(player, message.substr(7));
-        return false;
-      }
-      if (message.length > 65) {
-        room.sendAnnouncement("", player.id);
-        return false;
-      }
-      messageHistory.push(player.id);
-      messageCounter++;
-      if (messageCounter === 3) {
-        if (
-          messageHistory[messageHistory.length - 1] === player.id &&
-          messageHistory[messageHistory.length - 2] === player.id &&
-          messageHistory[messageHistory.length - 3] === player.id
-        ) {
-          room.sendChat("Spam alert.", player.id);
-        }
-      }
-      if (messageCounter === 6) {
-        if (
-          messageHistory[messageHistory.length - 1] === player.id &&
-          messageHistory[messageHistory.length - 2] === player.id &&
-          messageHistory[messageHistory.length - 3] === player.id &&
-          messageHistory[messageHistory.length - 4] === player.id &&
-          messageHistory[messageHistory.length - 5] === player.id &&
-          messageHistory[messageHistory.length - 6] === player.id
-        ) {
-          room.kickPlayer(player.id, "Moderate your messages", true);
-        }
-      }
-      if (
-        messageHistory[messageHistory.length - 1] !==
-        messageHistory[messageHistory.length - 2]
-      ) {
-        messageCounter = 1;
-      }
-      if (player.name === "hitler" && player.name === "hitler") {
-        messageCounter = 1;
-      }
-    }
-  }
   messageHistory.push(player.id);
   messageCounter++;
   if (messageCounter === 1545) {
@@ -3326,7 +2252,21 @@ room.onPlayerChat = function (player, message) {
       }
     }, 30 * 60 * 1000);
     return false;
-  } else if (["!afks", "!afklist"].includes(message[0].toLowerCase())) {
+  } else if (["!sub"].includes(message[0].toLowerCase())) {
+    if (players.length != 1 && player.team != Team.SPECTATORS) {
+      if (player.team == Team.RED && streak > 0 && room.getScores() == null) {
+        room.setPlayerTeam(player.id, Team.SPECTATORS);
+      } else {
+        room.setPlayerTeam(player.id, Team.SPECTATORS);
+        return false;
+      }
+    } else if (players.length == 1 && !getAFK(player)) {
+      room.setPlayerTeam(player.id, Team.SPECTATORS);
+    }
+
+    return false;
+  } 
+  else if (["!afks", "!afklist"].includes(message[0].toLowerCase())) {
     var cstm = "[PV] AFK List : ";
     for (var i = 0; i < extendedP.length; i++) {
       if (
@@ -4402,58 +3342,243 @@ room.onPlayerChat = function (player, message) {
     stats = JSON.parse(localStorage.getItem(getAuth(player)));
     var announcement = "";
     var chatColor = "";
-    if (stats[Ss.GL] > 500) {
+
+    // CHAT RANKIN
+
+    if (vips.auth.includes(getAuth(player)) && vips.name.includes("q")) {
+      if (Array.isArray(message)) {
+        const removedCommasArray = message.map((item) =>
+          typeof item === "string" ? item.replace(/,/g, "") : item
+        );
+
+        room.sendAnnouncement(
+          `${
+            messages.onPlayerChat.Player[Number(player.admin)][
+              Number(checkPlayerID(player.id))
+            ]
+          } ${player.name}: ${removedCommasArray.join(" ")}`,
+          null,
+          colors.onPlayerChat.Player[Number(player.admin)][
+            Number(checkPlayerID(player.id))
+          ],
+          fonts.onPlayerChat.Player[Number(player.admin)][
+            Number(checkPlayerID(player.id))
+          ]
+        );
+      } else {
+        // Manejar el caso en el que message no es un array (puedes imprimir un mensaje de error o manejarlo de otra manera)
+        console.error("El mensaje no es un array:", message);
+      }
+
+      return false;
+    } else if (stats[Ss.GL] > 500) {
       announcement +=
         "[👑] - [⚽: " + stats[Ss.GL] + "]  ·「The Legend of x3」";
       chatColor = "0xf77104";
     } else if (stats[Ss.GL] > 200) {
-      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond IV」";
-      chatColor = "0x7cd3fa";
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
+      chatColor = "0x00ff00";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Ballon d'or」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 150) {
-      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond III」";
-      chatColor = "0x7cd3fa";
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Bota d'or」";
+      chatColor = "0x00ff00";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Bota d'or」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Bota d'or」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 120) {
-      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond II」";
-      chatColor = "0x7cd3fa";
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
+      chatColor = "0x00ff00";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Top mundial」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 80) {
-      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond I」";
-      chatColor = "0x7cd3fa";
+
     } else if (stats[Ss.GL] > 60) {
-      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Platinum III」";
-      chatColor = "0x62AEE3";
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「El mejor」";
+      chatColor = "0xff0066";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「El mejor」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「El mejor」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 55) {
-      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Platinum II」";
-      chatColor = "0x62AEE3";
+      
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Imparable」";
+      chatColor = "0xff0066";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Imparable」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Imparable」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 50) {
-      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Platinum I」";
-      chatColor = "0x62AEE3";
+
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「NeyJr」";
+      chatColor = "0xff0066";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「NeyJr」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「NeyJr」";
+          chatColor = "0xff7900";
+        } 
+      }
+      
     } else if (stats[Ss.GL] > 40) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Goat」";
       chatColor = "0xEAC274";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Goat」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Goat」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 35) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Prime」";
       chatColor = "0xEAC274";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Prime」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Prime」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 30) {
+
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
       chatColor = "0xEAC274";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
+          chatColor = "0xff7900";
+        } 
+      }
+
     } else if (stats[Ss.GL] > 20) {
-      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Campeon」";
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Campeón」";
       chatColor = "0xA2A2A2";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Campeón」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Campeón」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 15) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Titular」";
       chatColor = "0xA2A2A2";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Titular」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Titular」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 10) {
+
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Killer」";
       chatColor = "0xA2A2A2";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Killer」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ][⚽: " + stats[Ss.GL] + "]  ·「Killer」";
+
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 8) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
       chatColor = "0xbc5e00";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 5) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
       chatColor = "0xbc5e00";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else if (stats[Ss.GL] > 2) {
       announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Principiante」";
       chatColor = "0xbc5e00";
+      if (vips.auth.includes(getAuth(player))) {
+        announcement =
+          "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  ·「Principiante」";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement = "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Principiante」";
+          chatColor = "0xff7900";
+        } 
+      }
     } else {
       announcement += "「Meme nuevo」";
       chatColor = "0xEBEBEB";
@@ -4462,7 +3587,13 @@ room.onPlayerChat = function (player, message) {
     console.log(chatColor);
     console.log(originalMessage);
     announcement += player.name + ": " + originalMessage;
-    room.sendAnnouncement(announcement, null, chatColor);
+    room.sendAnnouncement(announcement, null, chatColor,
+    fonts.onPlayerChat.Player[Number(player.admin)][
+      Number(checkPlayerID(player.id))
+    ],
+    sounds.onPlayerChat.Player[Number(player.admin)][
+      Number(checkPlayerID(player.id))
+    ]);
     return false;
   } else {
     room.sendAnnouncement(
@@ -4836,7 +3967,7 @@ msg1 = setInterval(function () {
 
 votekickInfoInterval = setInterval(function () {
   room.sendAnnouncement(
-    "You can type !votekick [player_name] (for example: !votekick IvanBre) to kick a player in the room by voting. The voting system does not work if there are less than 4 people in the room.",
+    "Puedes escribir !votekick [nombre_jugador] (por ejemplo: !votekick IvanBre) para expulsar a un jugador de la sala mediante votación. El sistema de votación no funciona si hay menos de 4 personas en la sala.",
     null,
     0xffffff,
     "normal",

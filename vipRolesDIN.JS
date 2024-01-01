@@ -67,7 +67,11 @@ var roomObject = {
 
 var vips = {
   name: ["ds3"],
-  auth: ["K5--Pj0lZfG0gt4BL1re0KtRkRbcy7tvA3qZ_ccKZd4"],
+  auth: [
+    "K5--Pj0lZfG0gt4BL1re0KtRkRbcy7tvA3qZ_ccKZd4",
+    "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8",
+    "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8",
+  ],
   id: [],
 };
 

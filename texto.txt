@@ -1,0 +1,75 @@
+else if (stats[Ss.GL] > 500) {
+      announcement +=
+        "[👑] - [⚽: " + stats[Ss.GL] + "]  ·「The Legend of x3」";
+      chatColor = "0xf77104";
+    } else if (stats[Ss.GL] > 200) {
+      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond IV」";
+      chatColor = "0x7cd3fa";
+    } else if (stats[Ss.GL] > 150) {
+      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond III」";
+      chatColor = "0x7cd3fa";
+    } else if (stats[Ss.GL] > 120) {
+      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond II」";
+      chatColor = "0x7cd3fa";
+    } else if (stats[Ss.GL] > 80) {
+      announcement += "[💎] - [⚽: " + stats[Ss.GL] + "]  ·「Diamond I」";
+      chatColor = "0x7cd3fa";
+    } else if (stats[Ss.GL] > 60) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Platinum III」";
+      chatColor = "0x62AEE3";
+    } else if (stats[Ss.GL] > 55) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Platinum II」";
+      chatColor = "0x62AEE3";
+    } else if (stats[Ss.GL] > 50) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Platinum I」";
+      chatColor = "0x62AEE3";
+    } else if (stats[Ss.GL] > 40) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Goat」";
+      chatColor = "0xEAC274";
+    } else if (stats[Ss.GL] > 35) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Prime」";
+      chatColor = "0xEAC274";
+    } else if (stats[Ss.GL] > 30) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Leyenda」";
+      chatColor = "0xEAC274";
+    } else if (stats[Ss.GL] > 20) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Campeon」";
+      chatColor = "0xA2A2A2";
+    } else if (stats[Ss.GL] > 15) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Titular」";
+      chatColor = "0xA2A2A2";
+    } else if (stats[Ss.GL] > 10) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Killer」";
+      chatColor = "0xA2A2A2";
+    } else if (stats[Ss.GL] > 8) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Prodigio」";
+      chatColor = "0xbc5e00";
+    } else if (stats[Ss.GL] > 5) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Promesa」";
+      chatColor = "0xbc5e00";
+    } else if (stats[Ss.GL] > 2) {
+      announcement += "[⚽: " + stats[Ss.GL] + "]  ·「Principiante」";
+      chatColor = "0xbc5e00";
+    } 
+
+
+
+
+        if (vips.auth.includes(getAuth(player))) {
+      if (Array.isArray(message)) {
+        const removedCommasArray = message.map(item =>
+          typeof item === 'string' ? item.replace(/,/g, '') : item
+        );
+    
+        room.sendAnnouncement(
+          `${
+            messages.onPlayerChat.Player[Number(player.admin)][
+              Number(checkPlayerID(player.id))
+            ]
+          } ${player.name}: ${removedCommasArray.join(' ')}`,
+        );
+      } else {
+        // Manejar el caso en el que message no es un array (puedes imprimir un mensaje de error o manejarlo de otra manera)
+        console.error('El mensaje no es un array:', message);
+      }
+    }
