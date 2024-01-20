@@ -1,5 +1,5 @@
 /* ROOM */
-const roomName = "☕[AF] Santos F.C Hax 4v4 24/7 ⬛⬜ ☕";
+const roomName = "☕🏖️ [ AF ] Haxlibú 4V4 [ AF ] 🏖️☕";
 const botName = "Santos F.C";
 const maxPlayers = 24; // maximum number of players in the room
 const roomPublic = true; // true = public room | false = players only enter via the room link (it does not appear in the room list)
