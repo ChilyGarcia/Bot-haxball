@@ -2,7 +2,7 @@
 const roomName = "☕🏖️ [ AF ] Haxlibú 4V4 [ AF ] 🏖️☕";
 const botName = "Santos F.C";
 const maxPlayers = 24; // maximum number of players in the room
-const roomPublic = true; // true = public room | false = players only enter via the room link (it does not appear in the room list)
+const roomPublic = false; // true = public room | false = players only enter via the room link (it does not appear in the room list)
 const geo = [
   { lat: -22.9201, lon: -43.3307, code: "br" },
   { code: "FR", lat: 46.2, lon: 2.2 },
@@ -10,6 +10,10 @@ const geo = [
   { code: "GB", lat: 55.3, lon: -3.4 },
   { code: "PT", lat: 39.3, lon: -8.2 },
 ];
+
+// SWIP
+
+let lastUsedSwip = {};
 
 // VIPS
 
@@ -81,6 +85,7 @@ var vips = {
     "v3KhYu8V5_q2a_-XMn0vbE3IDrtjE_6q8FZ8xQ-6ZH0",
     "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8",
     "IpfpDeppysc_BTPbz7DSjBMTLQMqNW3i0Vi1rao7VFQ",
+    "Vbame9FffXnY6WH_joeJX2lrsG6BrRm5VlVWI2G5zc8",
   ],
   id: [],
 };
@@ -2278,6 +2283,39 @@ room.onPlayerChat = function (player, message) {
     }
 
     return false;
+  } else if (["!swip"].includes(message[0].toLowerCase())) {
+    let now = Date.now();
+
+    if (lastUsed[player.id] && now - lastUsed[player.id] < 20 * 60 * 1000) {
+      room.sendChat(
+        "Lo siento, solo puedes usar este comando una vez cada 20 minutos."
+      );
+      return;
+    }
+
+    lastUsed[player.id] = now;
+
+    if (!vips.auth.includes(getAuth(player))) {
+      room.sendChat("Lo siento, solo los VIP pueden usar este comando.");
+      return;
+    }
+
+    room.setPlayerTeam(player.id, 0);
+
+    let spectators = room
+      .getPlayerList()
+      .filter((p) => p.team === 0 && p.id !== player.id);
+
+    if (spectators.length > 0) {
+      let firstSpectator = spectators.shift();
+      room.reorderPlayers(
+        [firstSpectator.id, player.id].concat(spectators.map((p) => p.id)),
+        0,
+        0
+      );
+    } else {
+      room.reorderPlayers([player.id], 0, 0);
+    }
   } else if (["!afks", "!afklist"].includes(message[0].toLowerCase())) {
     var cstm = "[PV] AFK List : ";
     for (var i = 0; i < extendedP.length; i++) {
@@ -3607,6 +3645,17 @@ room.onPlayerChat = function (player, message) {
     } else {
       announcement += "「Meme nuevo」";
       chatColor = "0xEBEBEB";
+
+      if (vips.auth.includes(getAuth(player))) {
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  Meme nuevo";
+        chatColor = "0x00ffff";
+
+        if (player.admin) {
+          announcement =
+            "[ VIP ] 💎 [ ADMIN ] [⚽: " + stats[Ss.GL] + "]  ·「Meme neuvo」";
+          chatColor = "0xff7900";
+        }
+      }
     }
     console.log(announcement);
     console.log(chatColor);
