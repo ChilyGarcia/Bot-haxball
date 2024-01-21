@@ -81,11 +81,8 @@ var vips = {
   name: ["ds3", "ꜱꜰᴄ | ʀᴏᴍᴀʀɪᴏ"],
   auth: [
     "K5--Pj0lZfG0gt4BL1re0KtRkRbcy7tvA3qZ_ccKZd4",
-    "XSI_N3_mU6FNLaFZ_0LTjsDY0jRNDRTh2CefSbMGmVU",
-    "v3KhYu8V5_q2a_-XMn0vbE3IDrtjE_6q8FZ8xQ-6ZH0",
-    "DKzwwQNi-iG28ERjiCaXw8m18h-wApBWK8x_Ry05bD8",
-    "IpfpDeppysc_BTPbz7DSjBMTLQMqNW3i0Vi1rao7VFQ",
-    "Vbame9FffXnY6WH_joeJX2lrsG6BrRm5VlVWI2G5zc8",
+    "7kYuYOhVPgTev-t-w9DTIZ5V5DzN-KbPWetzkhTgqD8",
+    "gSaUps0IQ6OXs9fgfBBgmmSl_KWtjkietU1jrvPyXYQ",
   ],
   id: [],
 };
@@ -296,8 +293,6 @@ var ballRadius = 6.25;
 const triggerDistance = playerRadius + ballRadius + 0.01;
 
 var practiceMap = `{"name":"AF Official 4v4 by Vitão ®","width":810,"height":350,"bg":{"kickOffRadius":80,"color":"1D2431"},"vertexes":[{"x":-700,"y":-85,"bCoef":0.1,"cMask":["ball"]},{"x":-735,"y":-85,"bCoef":0.1,"cMask":["ball"]},{"x":-734,"y":-86,"bCoef":0.1,"cMask":["ball"]},{"x":-734,"y":86,"bCoef":0.1,"cMask":["ball"]},{"x":-735,"y":85,"bCoef":0.1,"cMask":["ball"]},{"x":-700,"y":85,"bCoef":0.1,"cMask":["ball"]},{"x":700,"y":85,"bCoef":0.1,"cMask":["ball"]},{"x":735,"y":85,"bCoef":0.1,"cMask":["ball"]},{"x":734,"y":86,"bCoef":0.1,"cMask":["ball"]},{"x":734,"y":-86,"bCoef":0.1,"cMask":["ball"]},{"x":735,"y":-85,"bCoef":0.1,"cMask":["ball"]},{"x":700,"y":-85,"bCoef":0.1,"cMask":["ball"]},{"x":-700,"y":-321.5,"cMask":["ball"]},{"x":-700,"y":-85,"cMask":["ball"]},{"x":-700,"y":85,"cMask":["ball"]},{"x":-700,"y":321.5,"cMask":["ball"]},{"x":-700,"y":320,"cMask":["ball"]},{"x":700,"y":320,"cMask":["ball"]},{"x":700,"y":321.5,"cMask":["ball"]},{"x":700,"y":85,"cMask":["ball"]},{"x":700,"y":-85,"cMask":["ball"]},{"x":700,"y":-321.5,"cMask":["ball"]},{"x":700,"y":-320,"cMask":["ball"]},{"x":-700,"y":-320,"cMask":["ball"]},{"x":-700,"y":-85,"cMask":[]},{"x":-700,"y":85,"cMask":[]},{"x":700,"y":85,"cMask":[]},{"x":700,"y":-85,"cMask":[]},{"x":-360,"y":318,"cMask":[]},{"x":-360,"y":-318,"cMask":[]},{"x":360,"y":-318,"cMask":[]},{"x":360,"y":318,"cMask":[]},{"x":-500,"y":-1,"cMask":[]},{"x":-500,"y":1,"cMask":[]},{"x":-500,"y":-2,"cMask":[]},{"x":-500,"y":2,"cMask":[]},{"x":0,"y":-80,"cMask":["red","blue"],"cGroup":["redKO"]},{"x":0,"y":80,"cMask":["red","blue"],"cGroup":["redKO"]},{"x":0,"y":-350,"cMask":["red","blue"],"cGroup":["redKO","blueKO"]},{"x":0,"y":350,"cMask":["red","blue"],"cGroup":["redKO","blueKO"]},{"x":0,"y":-318,"cMask":[]},{"x":0,"y":-80,"cMask":[]},{"x":0,"y":318,"cMask":[]},{"x":0,"y":80,"cMask":[]},{"x":500,"y":-1,"cMask":[]},{"x":500,"y":1,"cMask":[]},{"x":500,"y":-2,"cMask":[]},{"x":500,"y":2,"cMask":[]},{"x":-360,"y":-135,"cMask":[]},{"x":-360,"y":135,"cMask":[]},{"x":360,"y":135,"cMask":[]},{"x":360,"y":-135,"cMask":[]},{"x":-698,"y":125,"cMask":[]},{"x":-630,"y":125,"cMask":[]},{"x":-630,"y":-125,"cMask":[]},{"x":-698,"y":-125,"cMask":[]},{"x":-630,"y":126.5,"cMask":[]},{"x":-630,"y":-126.5,"cMask":[]},{"x":698,"y":125,"cMask":[]},{"x":630,"y":125,"cMask":[]},{"x":630,"y":-125,"cMask":[]},{"x":698,"y":-125,"cMask":[]},{"x":630,"y":126.5,"cMask":[]},{"x":630,"y":-126.5,"cMask":[]},{"x":-50,"y":30,"cMask":[]},{"x":-25,"y":-30,"cMask":[]},{"x":11,"y":30,"cMask":[]},{"x":20,"y":-30,"cMask":[]},{"x":-42.5,"y":30,"cMask":[]},{"x":-17.5,"y":-30,"cMask":[]},{"x":-52,"y":30,"cMask":[]},{"x":-27,"y":-30,"cMask":[]},{"x":-40.5,"y":30,"cMask":[]},{"x":-15.5,"y":-30,"cMask":[]},{"x":-33,"y":30,"cMask":[]},{"x":-8,"y":-30,"cMask":[]},{"x":-31,"y":30,"cMask":[]},{"x":-6,"y":-30,"cMask":[]},{"x":-29,"y":30,"cMask":[]},{"x":-4,"y":-30,"cMask":[]},{"x":-27,"y":30,"cMask":[]},{"x":-2,"y":-30,"cMask":[]},{"x":-25,"y":30,"cMask":[]},{"x":0,"y":-30,"cMask":[]},{"x":5,"y":30,"cMask":[]},{"x":0,"y":-30,"cMask":[]},{"x":3,"y":30,"cMask":[]},{"x":-2,"y":-30,"cMask":[]},{"x":1,"y":30,"cMask":[]},{"x":-4,"y":-30,"cMask":[]},{"x":-1,"y":30,"cMask":[]},{"x":-6,"y":-30,"cMask":[]},{"x":-3,"y":30,"cMask":[]},{"x":-8,"y":-30,"cMask":[]},{"x":-21,"y":19,"cMask":[]},{"x":-5,"y":19,"cMask":[]},{"x":-21,"y":17,"cMask":[]},{"x":-5,"y":17,"cMask":[]},{"x":-21,"y":15,"cMask":[]},{"x":-5,"y":15,"cMask":[]},{"x":-21,"y":13,"cMask":[]},{"x":-5,"y":13,"cMask":[]},{"x":-21,"y":11,"cMask":[]},{"x":-5,"y":11,"cMask":[]},{"x":13,"y":30,"cMask":[]},{"x":22,"y":-30,"cMask":[]},{"x":15,"y":30,"cMask":[]},{"x":24,"y":-30,"cMask":[]},{"x":17,"y":30,"cMask":[]},{"x":26,"y":-30,"cMask":[]},{"x":19,"y":30,"cMask":[]},{"x":28,"y":-30,"cMask":[]},{"x":19,"y":-29,"cMask":[]},{"x":49,"y":-29,"cMask":[]},{"x":19,"y":-27,"cMask":[]},{"x":49,"y":-27,"cMask":[]},{"x":19,"y":-25,"cMask":[]},{"x":49,"y":-25,"cMask":[]},{"x":19,"y":-23,"cMask":[]},{"x":49,"y":-23,"cMask":[]},{"x":19,"y":-21,"cMask":[]},{"x":49,"y":-21,"cMask":[]},{"x":23,"y":-6,"cMask":[]},{"x":42,"y":-6,"cMask":[]},{"x":23,"y":-4,"cMask":[]},{"x":42,"y":-4,"cMask":[]},{"x":23,"y":-2,"cMask":[]},{"x":42,"y":-2,"cMask":[]},{"x":23,"y":0,"cMask":[]},{"x":42,"y":0,"cMask":[]},{"x":23,"y":2,"cMask":[]},{"x":42,"y":2,"cMask":[]},{"x":-52,"y":27,"cMask":[]},{"x":-27,"y":-33,"cMask":[]},{"x":9,"y":27,"cMask":[]},{"x":18,"y":-33,"cMask":[]},{"x":-44.5,"y":27,"cMask":[]},{"x":-19.5,"y":-33,"cMask":[]},{"x":-54,"y":27,"cMask":[]},{"x":-29,"y":-33,"cMask":[]},{"x":-42.5,"y":27,"cMask":[]},{"x":-17.5,"y":-33,"cMask":[]},{"x":-35,"y":27,"cMask":[]},{"x":-10,"y":-33,"cMask":[]},{"x":-33,"y":27,"cMask":[]},{"x":-8,"y":-33,"cMask":[]},{"x":-31,"y":27,"cMask":[]},{"x":-6,"y":-33,"cMask":[]},{"x":-29,"y":27,"cMask":[]},{"x":-4,"y":-33,"cMask":[]},{"x":-27,"y":27,"cMask":[]},{"x":-2,"y":-33,"cMask":[]},{"x":3,"y":27,"cMask":[]},{"x":-2,"y":-33,"cMask":[]},{"x":1,"y":27,"cMask":[]},{"x":-4,"y":-33,"cMask":[]},{"x":-1,"y":27,"cMask":[]},{"x":-6,"y":-33,"cMask":[]},{"x":-3,"y":27,"cMask":[]},{"x":-8,"y":-33,"cMask":[]},{"x":-5,"y":27,"cMask":[]},{"x":-10,"y":-33,"cMask":[]},{"x":-23,"y":16,"cMask":[]},{"x":-7,"y":16,"cMask":[]},{"x":-23,"y":14,"cMask":[]},{"x":-7,"y":14,"cMask":[]},{"x":-23,"y":12,"cMask":[]},{"x":-7,"y":12,"cMask":[]},{"x":-23,"y":10,"cMask":[]},{"x":-7,"y":10,"cMask":[]},{"x":-23,"y":8,"cMask":[]},{"x":-7,"y":8,"cMask":[]},{"x":11,"y":27,"cMask":[]},{"x":20,"y":-33,"cMask":[]},{"x":13,"y":27,"cMask":[]},{"x":22,"y":-33,"cMask":[]},{"x":15,"y":27,"cMask":[]},{"x":24,"y":-33,"cMask":[]},{"x":17,"y":27,"cMask":[]},{"x":26,"y":-33,"cMask":[]},{"x":17,"y":-32,"cMask":[]},{"x":47,"y":-32,"cMask":[]},{"x":17,"y":-30,"cMask":[]},{"x":47,"y":-30,"cMask":[]},{"x":17,"y":-28,"cMask":[]},{"x":47,"y":-28,"cMask":[]},{"x":17,"y":-26,"cMask":[]},{"x":47,"y":-26,"cMask":[]},{"x":17,"y":-24,"cMask":[]},{"x":47,"y":-24,"cMask":[]},{"x":21,"y":-9,"cMask":[]},{"x":40,"y":-9,"cMask":[]},{"x":21,"y":-7,"cMask":[]},{"x":40,"y":-7,"cMask":[]},{"x":21,"y":-5,"cMask":[]},{"x":40,"y":-5,"cMask":[]},{"x":21,"y":-3,"cMask":[]},{"x":40,"y":-3,"cMask":[]},{"x":21,"y":-1,"cMask":[]},{"x":40,"y":-1,"cMask":[]}],"segments":[{"v0":0,"v1":1,"bias":10,"bCoef":0.1,"cMask":["ball"],"color":"717F98"},{"v0":3,"v1":2,"bias":-10,"bCoef":0.1,"curve":35,"curveF":3.1715948023632126,"cMask":["ball"],"color":"717F98"},{"v0":4,"v1":5,"bias":10,"bCoef":0.1,"cMask":["ball"],"color":"717F98"},{"v0":6,"v1":7,"bias":10,"bCoef":0.1,"cMask":["ball"],"color":"717F98"},{"v0":9,"v1":8,"bias":-10,"bCoef":0.1,"curve":35,"curveF":3.1715948023632126,"cMask":["ball"],"color":"717F98"},{"v0":10,"v1":11,"bias":10,"bCoef":0.1,"cMask":["ball"],"color":"717F98"},{"v0":12,"v1":13,"bias":10,"cMask":["ball"],"color":"717F98"},{"v0":14,"v1":15,"bias":10,"cMask":["ball"],"color":"717F98"},{"v0":16,"v1":17,"bias":10,"cMask":["ball"],"color":"717F98"},{"v0":18,"v1":19,"bias":10,"cMask":["ball"],"color":"717F98"},{"v0":20,"v1":21,"bias":10,"cMask":["ball"],"color":"717F98"},{"v0":22,"v1":23,"bias":10,"cMask":["ball"],"color":"717F98"},{"v0":24,"v1":25,"cMask":[],"color":"3B424F"},{"v0":26,"v1":27,"cMask":[],"color":"3B424F"},{"v0":28,"v1":29,"cMask":[],"color":"161C26"},{"v0":30,"v1":31,"cMask":[],"color":"161C26"},{"v0":33,"v1":32,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":32,"v1":33,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":35,"v1":34,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":34,"v1":35,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":38,"v1":36,"vis":false,"cMask":["red","blue"],"cGroup":["redKO","blueKO"]},{"v0":39,"v1":37,"vis":false,"cMask":["red","blue"],"cGroup":["redKO","blueKO"]},{"v0":37,"v1":36,"curve":180,"curveF":6.123233995736766e-17,"vis":false,"cMask":["red","blue"],"cGroup":["blueKO"]},{"v0":36,"v1":37,"curve":180,"curveF":6.123233995736766e-17,"vis":false,"cMask":["red","blue"],"cGroup":["redKO"]},{"v0":40,"v1":41,"cMask":[],"color":"161C26"},{"v0":42,"v1":43,"cMask":[],"color":"161C26"},{"v0":43,"v1":41,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":41,"v1":43,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":45,"v1":44,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":44,"v1":45,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":47,"v1":46,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":46,"v1":47,"curve":180,"curveF":6.123233995736766e-17,"cMask":[],"color":"161C26"},{"v0":48,"v1":49,"curve":89.99999999999999,"curveF":1.0000000000000002,"cMask":[],"color":"161C26"},{"v0":50,"v1":51,"curve":89.99999999999999,"curveF":1.0000000000000002,"cMask":[],"color":"161C26"},{"v0":52,"v1":53,"cMask":[],"color":"161C26"},{"v0":54,"v1":55,"cMask":[],"color":"161C26"},{"v0":56,"v1":57,"cMask":[],"color":"161C26"},{"v0":58,"v1":59,"cMask":[],"color":"161C26"},{"v0":60,"v1":61,"cMask":[],"color":"161C26"},{"v0":62,"v1":63,"cMask":[],"color":"161C26"},{"v0":64,"v1":65,"cMask":[],"color":"9101D"},{"v0":66,"v1":67,"cMask":[],"color":"9101D"},{"v0":68,"v1":69,"cMask":[],"color":"9101D"},{"v0":70,"v1":71,"cMask":[],"color":"9101D"},{"v0":72,"v1":73,"cMask":[],"color":"9101D"},{"v0":74,"v1":75,"cMask":[],"color":"9101D"},{"v0":76,"v1":77,"cMask":[],"color":"9101D"},{"v0":78,"v1":79,"cMask":[],"color":"9101D"},{"v0":80,"v1":81,"cMask":[],"color":"9101D"},{"v0":82,"v1":83,"cMask":[],"color":"9101D"},{"v0":84,"v1":85,"cMask":[],"color":"9101D"},{"v0":86,"v1":87,"cMask":[],"color":"9101D"},{"v0":88,"v1":89,"cMask":[],"color":"9101D"},{"v0":90,"v1":91,"cMask":[],"color":"9101D"},{"v0":92,"v1":93,"cMask":[],"color":"9101D"},{"v0":94,"v1":95,"cMask":[],"color":"9101D"},{"v0":96,"v1":97,"cMask":[],"color":"9101D"},{"v0":98,"v1":99,"cMask":[],"color":"9101D"},{"v0":100,"v1":101,"cMask":[],"color":"9101D"},{"v0":102,"v1":103,"cMask":[],"color":"9101D"},{"v0":104,"v1":105,"cMask":[],"color":"9101D"},{"v0":106,"v1":107,"cMask":[],"color":"9101D"},{"v0":108,"v1":109,"cMask":[],"color":"9101D"},{"v0":110,"v1":111,"cMask":[],"color":"9101D"},{"v0":112,"v1":113,"cMask":[],"color":"9101D"},{"v0":114,"v1":115,"cMask":[],"color":"9101D"},{"v0":116,"v1":117,"cMask":[],"color":"9101D"},{"v0":118,"v1":119,"cMask":[],"color":"9101D"},{"v0":120,"v1":121,"cMask":[],"color":"9101D"},{"v0":122,"v1":123,"cMask":[],"color":"9101D"},{"v0":124,"v1":125,"cMask":[],"color":"9101D"},{"v0":126,"v1":127,"cMask":[],"color":"9101D"},{"v0":128,"v1":129,"cMask":[],"color":"9101D"},{"v0":130,"v1":131,"cMask":[],"color":"9101D"},{"v0":132,"v1":133,"cMask":[],"color":"333945"},{"v0":134,"v1":135,"cMask":[],"color":"333945"},{"v0":136,"v1":137,"cMask":[],"color":"333945"},{"v0":138,"v1":139,"cMask":[],"color":"333945"},{"v0":140,"v1":141,"cMask":[],"color":"333945"},{"v0":142,"v1":143,"cMask":[],"color":"333945"},{"v0":144,"v1":145,"cMask":[],"color":"333945"},{"v0":146,"v1":147,"cMask":[],"color":"333945"},{"v0":148,"v1":149,"cMask":[],"color":"333945"},{"v0":150,"v1":151,"cMask":[],"color":"333945"},{"v0":152,"v1":153,"cMask":[],"color":"333945"},{"v0":154,"v1":155,"cMask":[],"color":"333945"},{"v0":156,"v1":157,"cMask":[],"color":"333945"},{"v0":158,"v1":159,"cMask":[],"color":"333945"},{"v0":160,"v1":161,"cMask":[],"color":"333945"},{"v0":162,"v1":163,"cMask":[],"color":"333945"},{"v0":164,"v1":165,"cMask":[],"color":"333945"},{"v0":166,"v1":167,"cMask":[],"color":"333945"},{"v0":168,"v1":169,"cMask":[],"color":"333945"},{"v0":170,"v1":171,"cMask":[],"color":"333945"},{"v0":172,"v1":173,"cMask":[],"color":"333945"},{"v0":174,"v1":175,"cMask":[],"color":"333945"},{"v0":176,"v1":177,"cMask":[],"color":"333945"},{"v0":178,"v1":179,"cMask":[],"color":"333945"},{"v0":180,"v1":181,"cMask":[],"color":"333945"},{"v0":182,"v1":183,"cMask":[],"color":"333945"},{"v0":184,"v1":185,"cMask":[],"color":"333945"},{"v0":186,"v1":187,"cMask":[],"color":"333945"},{"v0":188,"v1":189,"cMask":[],"color":"333945"},{"v0":190,"v1":191,"cMask":[],"color":"333945"},{"v0":192,"v1":193,"cMask":[],"color":"333945"},{"v0":194,"v1":195,"cMask":[],"color":"333945"},{"v0":196,"v1":197,"cMask":[],"color":"333945"},{"v0":198,"v1":199,"cMask":[],"color":"333945"}],"planes":[{"normal":[0,1],"dist":-350},{"normal":[0,-1],"dist":-350},{"normal":[1,0],"dist":-810},{"normal":[-1,0],"dist":-810},{"normal":[-1,0],"dist":-360,"bCoef":0,"cMask":["c1"]},{"normal":[1,0],"dist":-360,"bCoef":0,"cMask":["c0"]}],"goals":[{"p0":[-708.3,-85],"p1":[-708.3,85],"team":"red"},{"p0":[708.3,85],"p1":[708.3,-85],"team":"blue"}],"discs":[{"radius":5.8,"bCoef":0.412,"invMass":1.5,"color":"FFA500","cGroup":["ball","kick","score"]},{"pos":[-700,85],"radius":5.4,"invMass":0,"color":"3B424F"},{"pos":[-700,-85],"radius":5.4,"invMass":0,"color":"3B424F"},{"pos":[700,85],"radius":5.4,"invMass":0,"color":"3B424F"},{"pos":[700,-85],"radius":5.4,"invMass":0,"color":"3B424F"}],"playerPhysics":{"bCoef":0,"acceleration":0.11,"kickingAcceleration":0.083,"kickStrength":4.545},"ballPhysics":"disc0","spawnDistance":366.5}`;
-/* OPÇÕES */
-
 var afkLimit = 12; // limite de afk (12 segundos)
 var drawTimeLimit = 1; // minutos
 var maxTeamSize = 4; // máximo de jogadores num time, isso funciona para 1 (você pode querer adaptar as coisas para remover algumas estatísticas inúteis em 1v1, como assist ou cs), 2, 3 ou 4
@@ -2270,35 +2265,34 @@ room.onPlayerChat = function (player, message) {
       }
     }, 30 * 60 * 1000);
     return false;
-  } else if (["!sub"].includes(message[0].toLowerCase())) {
-    if (players.length != 1 && player.team != Team.SPECTATORS) {
-      if (player.team == Team.RED && streak > 0 && room.getScores() == null) {
-        room.setPlayerTeam(player.id, Team.SPECTATORS);
-      } else {
-        room.setPlayerTeam(player.id, Team.SPECTATORS);
-        return false;
-      }
-    } else if (players.length == 1 && !getAFK(player)) {
-      room.setPlayerTeam(player.id, Team.SPECTATORS);
-    }
-
-    return false;
   } else if (["!swip"].includes(message[0].toLowerCase())) {
     let now = Date.now();
+    let lastUsedTime = localStorage.getItem(`lastUsed_${player.id}`);
 
-    if (lastUsed[player.id] && now - lastUsed[player.id] < 20 * 60 * 1000) {
-      room.sendChat(
-        "Lo siento, solo puedes usar este comando una vez cada 20 minutos."
+    if (lastUsedTime && now - parseInt(lastUsedTime) < 20 * 60 * 1000) {
+      room.sendAnnouncement(
+        `Por favor espera unos minutos antes de usar de nuevo este comando!`,
+        player.id,
+        0xff8000,
+        "bold",
+        2
       );
-      return;
+      return; // Si se ha enviado el anuncio, termina la ejecución de la función aquí
     }
-
-    lastUsed[player.id] = now;
 
     if (!vips.auth.includes(getAuth(player))) {
-      room.sendChat("Lo siento, solo los VIP pueden usar este comando.");
-      return;
+      room.sendAnnouncement(
+        `No eres vip, este es un comando exclusivo de usuarios VIP, paga la cuota!`,
+        player.id,
+        0xff8000,
+        "bold",
+        2
+      );
+      return; // Si el usuario no es VIP, termina la ejecución de la función aquí
     }
+
+    // Solo actualiza lastUsedTime si no se ha enviado el anuncio
+    localStorage.setItem(`lastUsed_${player.id}`, now.toString());
 
     room.setPlayerTeam(player.id, 0);
 
@@ -3647,7 +3641,7 @@ room.onPlayerChat = function (player, message) {
       chatColor = "0xEBEBEB";
 
       if (vips.auth.includes(getAuth(player))) {
-        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  Meme nuevo";
+        announcement = "[ VIP ] 💎 [⚽: " + stats[Ss.GL] + "]  「Meme nuevo」";
         chatColor = "0x00ffff";
 
         if (player.admin) {
