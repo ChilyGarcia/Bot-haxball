@@ -2,7 +2,7 @@
 const roomName = "☕🏖️ [ AF ] Haxlibú 4V4 [ AF ] 🏖️☕";
 const botName = "Santos F.C";
 const maxPlayers = 24; // maximum number of players in the room
-const roomPublic = false; // true = public room | false = players only enter via the room link (it does not appear in the room list)
+const roomPublic = true; // true = public room | false = players only enter via the room link (it does not appear in the room list)
 const geo = [
   { lat: -22.9201, lon: -43.3307, code: "br" },
   { code: "FR", lat: 46.2, lon: 2.2 },
@@ -2265,7 +2265,7 @@ room.onPlayerChat = function (player, message) {
       }
     }, 30 * 60 * 1000);
     return false;
-  } else if (["!swip"].includes(message[0].toLowerCase())) {
+  } else if (["!primerofila"].includes(message[0].toLowerCase())) {
     let now = Date.now();
     let lastUsedTime = localStorage.getItem(`lastUsed_${player.id}`);
 
